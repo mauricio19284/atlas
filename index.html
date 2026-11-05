@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Atlas — rentas y flujo</title>
+<meta name="description" content="Atlas: qué unidades pagaron, quién va tarde y cuánto queda cada mes. Para arrendadores pequeños.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --ink:#1d1b18; --ink-2:#3a362f; --muted:#665f55;
+  --line:rgba(40,34,26,.13); --line-2:rgba(40,34,26,.32);
+  --field:rgba(255,255,255,.55); --ground:rgba(40,34,26,.07);
+  --ok:#2c6a43; --ok-soft:rgba(44,106,67,.12);
+  --warn:#8a6412; --warn-soft:rgba(138,100,18,.14);
+  --crit:#8e3b2e; --crit-soft:rgba(142,59,46,.13);
+  --display:"Cormorant Garamond","Cormorant","Garamond","Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+  --util:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --shadow:0 1px 2px rgba(40,34,26,.06), 0 14px 34px rgba(40,34,26,.16);
+  --shadow-up:0 2px 4px rgba(40,34,26,.08), 0 18px 40px rgba(40,34,26,.24);
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0; color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  background:#cfc6b7}
+/* the scene: warm stone sky, a far ridge, water, a stone floor — all CSS, no photo */
+body::before{content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(60% 50% at 82% 30%, rgba(255,244,224,.85), rgba(255,244,224,0) 70%),
+    linear-gradient(180deg,#aea698 0,#cfc6b7 42%,#e8dfd0 60%,#a59d90 61%,#ddd5c7 66%,#a59d90 78%,#b3aa9b 79%,#877e71 100%);
+}
+body::after{content:""; position:fixed; left:0; top:0; bottom:0; width:min(22vw,290px); z-index:-1; pointer-events:none;
+  background:linear-gradient(90deg,#6a6156,#8b8274); opacity:.9;
+  -webkit-mask-image:linear-gradient(90deg,#000 70%,transparent); mask-image:linear-gradient(90deg,#000 70%,transparent)}
+h1,h2,h3{font-family:var(--display); margin:0; text-wrap:balance; font-weight:500}
+p{margin:0}
+button,input,select,textarea{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--ink); outline-offset:2px; border-radius:6px}
+.mono{font-family:var(--util); font-variant-numeric:tabular-nums}
+[hidden]{display:none !important}
+
+/* ---------- glass ---------- */
+.glass{position:relative; min-width:0; border-radius:10px; border:1px solid rgba(255,255,255,.6);
+  background:linear-gradient(170deg,rgba(246,242,235,.76) 0,rgba(238,233,225,.62) 55%,rgba(232,226,217,.56) 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7), 0 0 0 1px rgba(40,34,26,.06), 0 14px 34px rgba(40,34,26,.16);
+  -webkit-backdrop-filter:blur(22px) saturate(140%); backdrop-filter:blur(22px) saturate(140%)}
+.glass > header{display:flex; align-items:baseline; gap:8px 14px; flex-wrap:wrap; padding:18px 22px 4px}
+.glass > header h2{font-size:14px; font-weight:600; letter-spacing:.22em; text-transform:uppercase}
+.glass > header .right{margin-left:auto; font-size:12.5px; color:var(--muted)}
+.gbody{padding:8px 22px 20px}
+.none{color:var(--muted); font-size:14px; padding:10px 0 6px; max-width:56ch}
+
+/* ---------- layout ---------- */
+.app{display:grid; grid-template-columns:208px minmax(0,1fr); gap:26px; align-items:start; max-width:1380px; margin:0 auto; padding:28px 28px 80px}
+.side{position:sticky; top:24px; display:flex; flex-direction:column; border-radius:10px; overflow:hidden; color:#fff;
+  background:linear-gradient(180deg,rgba(78,70,60,.74),rgba(60,53,45,.68)); border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 14px 34px rgba(40,34,26,.22); -webkit-backdrop-filter:blur(18px); backdrop-filter:blur(18px)}
+.side h2{font-size:22px; font-weight:600; letter-spacing:.34em; text-transform:uppercase; padding:26px 22px 4px}
+.side .org{padding:0 22px 14px; font-size:12px; color:rgba(255,255,255,.7); letter-spacing:.06em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.side nav{display:flex; flex-direction:column; gap:2px; padding:0 10px 10px}
+.side nav button{display:flex; align-items:baseline; gap:8px; background:none; border:0; border-radius:6px; padding:11px 12px; text-align:left; font-size:12px; font-weight:500; letter-spacing:.24em; text-transform:uppercase; color:rgba(255,255,255,.74); cursor:pointer; transition:background .15s,color .15s}
+.side nav button:hover{color:#fff; background:rgba(255,255,255,.08)}
+.side nav button[aria-pressed="true"]{color:#fff; background:rgba(255,255,255,.2); box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+.side nav .n{margin-left:auto; font-size:10.5px; letter-spacing:.04em; color:rgba(255,255,255,.6); font-variant-numeric:tabular-nums}
+.side .motto{padding:18px 22px 22px; margin-top:auto; border-top:1px solid rgba(255,255,255,.16); font-family:var(--display); font-style:italic; font-size:15px; letter-spacing:.1em; line-height:1.5; color:rgba(255,255,255,.78)}
+.main{min-width:0; display:flex; flex-direction:column; gap:18px}
+.head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px 24px; flex-wrap:wrap; padding:6px 4px 4px}
+.head h1{font-size:clamp(52px,7vw,96px); line-height:.92; letter-spacing:-.01em; color:#1a1815}
+.tag{display:flex; align-items:center; gap:14px; padding-top:12px; font-size:11px; font-weight:600; letter-spacing:.34em; text-transform:uppercase; color:#2b2823}
+.tag i{display:block; width:64px; height:1.5px; background:#2b2823}
+.bar{display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; justify-content:space-between}
+.month{display:inline-flex; align-items:center; gap:4px; padding:3px; border-radius:8px; background:rgba(244,240,232,.62); border:1px solid rgba(255,255,255,.6); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px)}
+.month button{background:none; border:0; border-radius:5px; padding:6px 11px; font-size:16px; cursor:pointer; line-height:1}
+.month button:hover{background:var(--ground)}
+.month b{min-width:150px; text-align:center; font-weight:600; font-size:12.5px; letter-spacing:.1em; text-transform:uppercase}
+.grid{display:grid; gap:16px}
+.grid.kpi{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.kpi .glass{padding:18px 22px 16px}
+.kpi .k{font-size:10.5px; font-weight:600; letter-spacing:.26em; text-transform:uppercase; color:var(--muted)}
+.kpi .v{font-family:var(--display); font-size:38px; line-height:1.1; margin-top:6px; font-variant-numeric:tabular-nums}
+.kpi .s{font-size:12.5px; color:var(--muted); margin-top:4px}
+.kpi .v.ok{color:var(--ok)} .kpi .v.crit{color:var(--crit)} .kpi .v.warn{color:var(--warn)}
+.two{display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:16px; align-items:start}
+
+/* ---------- tables & rows ---------- */
+table{width:100%; border-collapse:collapse; font-size:14px}
+th{font-size:10.5px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); text-align:left; padding:8px 8px 8px 0; border-bottom:1px solid var(--line)}
+td{padding:10px 8px 10px 0; border-bottom:1px solid var(--line); vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+td .sub{display:block; font-size:12px; color:var(--muted)}
+.prop{font-family:var(--display); font-size:22px; font-weight:600; padding:16px 0 4px}
+.prop small{font-family:var(--sans); font-size:12px; color:var(--muted); margin-left:10px; letter-spacing:.04em}
+.chip{display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; border:1px solid transparent; white-space:nowrap}
+.chip.paid{background:var(--ok-soft); color:var(--ok)}
+.chip.partial{background:var(--warn-soft); color:var(--warn)}
+.chip.due{background:rgba(255,255,255,.45); color:var(--ink-2); border-color:var(--line)}
+.chip.late{background:var(--crit-soft); color:var(--crit)}
+.chip.vacant{background:var(--ground); color:var(--muted)}
+
+/* ---------- controls ---------- */
+.btn{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line-2); border-radius:7px; padding:9px 14px; background:#1d1b18; color:#f6f2ea; font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; white-space:nowrap; transition:transform .1s, box-shadow .15s}
+.btn:hover{box-shadow:var(--shadow-up); transform:translateY(-1px)}
+.btn.ghost{background:rgba(255,255,255,.5); color:var(--ink)}
+.btn.sm{padding:6px 11px; font-size:9.5px}
+.btn.danger{background:none; border-color:transparent; color:var(--crit); padding:4px 6px}
+.btn:disabled{opacity:.5; cursor:default; transform:none; box-shadow:none}
+input[type=text],input[type=email],input[type=password],input[type=number],input[type=date],input[type=tel],select,textarea{
+  width:100%; border:1px solid var(--line-2); border-radius:7px; padding:9px 11px; background:var(--field); font-size:14px}
+textarea{min-height:68px; resize:vertical}
+label{display:flex; flex-direction:column; gap:5px; font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.form{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; align-items:end}
+.form .wide{grid-column:1/-1}
+.actions{display:flex; gap:10px; justify-content:flex-end; margin-top:14px; flex-wrap:wrap}
+.err{color:var(--crit); font-size:13px; margin-top:8px; min-height:1em}
+.toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%); z-index:50; padding:11px 18px; border-radius:8px; background:#1d1b18; color:#f6f2ea; font-size:13px; box-shadow:var(--shadow-up); opacity:0; transition:opacity .2s; pointer-events:none}
+.toast.on{opacity:1}
+
+/* ---------- modal ---------- */
+.modal{position:fixed; inset:0; z-index:30; display:flex; align-items:flex-start; justify-content:center; padding:6vh 16px; background:rgba(20,16,8,.4); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); overflow:auto}
+.modal .glass{width:min(620px,100%); background:linear-gradient(170deg,rgba(250,247,241,.96),rgba(240,235,227,.94))}
+
+/* ---------- gate (sign in) ---------- */
+.gate{min-height:100vh; display:grid; place-items:center; padding:24px}
+.gate .glass{width:min(420px,100%); padding:34px 32px 28px}
+.gate h1{font-size:44px; letter-spacing:.3em; text-transform:uppercase; font-weight:600; text-align:center}
+.gate .sub{text-align:center; color:var(--muted); font-size:13px; margin:4px 0 22px}
+.gate form{display:flex; flex-direction:column; gap:12px}
+.gate .switch{text-align:center; font-size:13px; color:var(--muted); margin-top:14px}
+.gate .switch button{background:none; border:0; text-decoration:underline; cursor:pointer; padding:0; color:var(--ink)}
+
+@media (max-width:860px){
+  .app{grid-template-columns:1fr; padding:16px 14px 70px; gap:16px}
+  .side{position:static; flex-direction:row; flex-wrap:wrap; align-items:center}
+  .side h2{padding:14px 18px 8px; font-size:18px}
+  .side .org{display:none}
+  .side nav{flex-direction:row; flex-wrap:wrap; padding:0 8px 8px; width:100%}
+  .side nav button{padding:8px 10px; font-size:10.5px; letter-spacing:.14em}
+  .side .motto{display:none}
+  .head h1{font-size:46px}
+  .grid.kpi{grid-template-columns:1fr 1fr; gap:10px}
+  .kpi .glass{padding:14px 16px 12px}
+  .kpi .v{font-size:28px}
+  body::after{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ sign in ============ -->
+<div id="gate" class="gate" hidden>
+  <div class="glass">
+    <h1>Atlas</h1>
+    <p class="sub">Rentas y flujo de tus propiedades</p>
+    <form id="gate-form">
+      <label>Correo <input type="email" id="g-email" autocomplete="email" required></label>
+      <label>Contraseña <input type="password" id="g-pass" autocomplete="current-password" minlength="6" required></label>
+      <button class="btn" id="g-go" type="submit">Entrar</button>
+      <div class="err" id="g-err"></div>
+    </form>
+    <p class="switch" id="g-switch">¿Primera vez? <button type="button" id="g-toggle">Crear cuenta</button></p>
+  </div>
+</div>
+
+<!-- ============ first org ============ -->
+<div id="neworg" class="gate" hidden>
+  <div class="glass">
+    <h1>Atlas</h1>
+    <p class="sub">¿Cómo se llama tu negocio o portafolio?</p>
+    <form id="neworg-form">
+      <label>Nombre <input type="text" id="o-name" placeholder="Inmuebles García" required></label>
+      <button class="btn" type="submit">Empezar</button>
+      <div class="err" id="o-err"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ app ============ -->
+<div id="app" class="app" hidden>
+  <aside class="side">
+    <h2>Atlas</h2>
+    <div class="org" id="side-org"></div>
+    <nav id="nav">
+      <button data-v="resumen" aria-pressed="true">Resumen</button>
+      <button data-v="unidades">Unidades <span class="n" id="n-units"></span></button>
+      <button data-v="pagos">Pagos <span class="n" id="n-pay"></span></button>
+      <button data-v="gastos">Gastos <span class="n" id="n-exp"></span></button>
+      <button data-v="ajustes">Ajustes</button>
+    </nav>
+    <div class="motto">Lo que no se mide, no se cobra.</div>
+  </aside>
+
+  <main class="main">
+    <div class="head">
+      <div>
+        <h1 id="title">Resumen</h1>
+        <div class="tag"><i></i><span id="tagline">Este mes, de un vistazo</span></div>
+      </div>
+      <div class="month">
+        <button id="m-prev" title="Mes anterior">‹</button>
+        <b id="m-label"></b>
+        <button id="m-next" title="Mes siguiente">›</button>
+      </div>
+    </div>
+
+    <!-- resumen -->
+    <section data-view="resumen">
+      <div class="grid kpi" id="kpis"></div>
+      <div class="two" style="margin-top:16px">
+        <div class="glass">
+          <header><h2>Pendientes de cobro</h2><span class="right" id="pend-right"></span></header>
+          <div class="gbody" id="pend"></div>
+        </div>
+        <div class="glass">
+          <header><h2>Movimientos del mes</h2><span class="right" id="mov-right"></span></header>
+          <div class="gbody" id="mov"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- unidades -->
+    <section data-view="unidades" hidden>
+      <div class="bar">
+        <span style="font-size:13px;color:var(--ink-2)">Propiedades y sus unidades. El estado es del mes seleccionado.</span>
+        <span style="display:flex;gap:8px"><button class="btn ghost" id="add-prop">+ Propiedad</button><button class="btn" id="add-unit">+ Unidad</button></span>
+      </div>
+      <div id="units" style="margin-top:14px;display:flex;flex-direction:column;gap:16px"></div>
+    </section>
+
+    <!-- pagos -->
+    <section data-view="pagos" hidden>
+      <div class="bar">
+        <span style="font-size:13px;color:var(--ink-2)">Cobros registrados para el mes seleccionado.</span>
+        <button class="btn" id="add-pay">+ Registrar pago</button>
+      </div>
+      <div class="glass" style="margin-top:14px"><div class="gbody" id="pays" style="padding-top:14px"></div></div>
+    </section>
+
+    <!-- gastos -->
+    <section data-view="gastos" hidden>
+      <div class="bar">
+        <span style="font-size:13px;color:var(--ink-2)">Mantenimiento, servicios, predial y demás, del mes seleccionado.</span>
+        <button class="btn" id="add-exp">+ Registrar gasto</button>
+      </div>
+      <div class="glass" style="margin-top:14px"><div class="gbody" id="exps" style="padding-top:14px"></div></div>
+    </section>
+
+    <!-- ajustes -->
+    <section data-view="ajustes" hidden>
+      <div class="two">
+        <div class="glass">
+          <header><h2>Negocio</h2></header>
+          <div class="gbody">
+            <form id="org-form" class="form">
+              <label class="wide">Nombre <input type="text" id="s-name" required></label>
+              <label>Moneda <select id="s-cur"><option>MXN</option><option>USD</option></select></label>
+              <div class="actions wide"><button class="btn" type="submit">Guardar</button></div>
+            </form>
+          </div>
+        </div>
+        <div class="glass">
+          <header><h2>Equipo</h2><span class="right">Quien tenga cuenta en Atlas</span></header>
+          <div class="gbody">
+            <div id="members" style="font-size:14px;margin-bottom:12px"></div>
+            <form id="inv-form" class="form">
+              <label class="wide">Correo de la persona <input type="email" id="inv-email" required></label>
+              <div class="actions wide"><button class="btn ghost" type="submit">Invitar</button></div>
+              <div class="err wide" id="inv-err"></div>
+            </form>
+          </div>
+        </div>
+        <div class="glass">
+          <header><h2>Cuenta</h2></header>
+          <div class="gbody">
+            <p style="font-size:14px;margin-bottom:12px" id="me"></p>
+            <button class="btn ghost" id="signout">Cerrar sesión</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="modal" class="modal" hidden>
+  <div class="glass">
+    <header><h2 id="md-title"></h2><button class="btn danger" id="md-x" style="margin-left:auto;font-size:18px">×</button></header>
+    <div class="gbody" id="md-body"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ---------- config (publishable key; data is protected by sign-in + row-level security) ----------
+const CFG={url:"https://vujplbatlbogrogwmnzk.supabase.co", key:"sb_publishable_15J4arZjH7YU-rSEuENwkA_J0NhZK99"};
+const sb=window.supabase.createClient(CFG.url,CFG.key);
+
+// ---------- state ----------
+const S={user:null, org:null, orgs:[], props:[], units:[], pays:[], exps:[], members:[],
+  period:new Date().toISOString().slice(0,7), view:"resumen"};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=n=>new Intl.NumberFormat("es-MX",{style:"currency",currency:S.org?.currency||"MXN",maximumFractionDigits:0}).format(+n||0);
+const MONTHS=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const plabel=p=>{const [y,m]=p.split("-"); return MONTHS[+m-1]+" "+y};
+const today=()=>new Date().toISOString().slice(0,10);
+const fdate=d=>{const [y,m,dd]=d.split("-"); return `${+dd} ${MONTHS[+m-1].slice(0,3)}`};
+function toast(t){const e=$("#toast"); e.textContent=t; e.classList.add("on"); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove("on"),2200)}
+const CAT={maintenance:"Mantenimiento",utilities:"Servicios",taxes:"Predial / impuestos",admin:"Administración",insurance:"Seguro",other:"Otro"};
+const METHOD={transfer:"Transferencia",cash:"Efectivo",card:"Tarjeta",other:"Otro"};
+
+// ---------- auth ----------
+let signup=false;
+$("#g-toggle").onclick=()=>{signup=!signup; $("#g-go").textContent=signup?"Crear cuenta":"Entrar";
+  $("#g-switch").firstChild.textContent=signup?"¿Ya tienes cuenta? ":"¿Primera vez? "; $("#g-toggle").textContent=signup?"Entrar":"Crear cuenta"; $("#g-err").textContent=""};
+$("#gate-form").onsubmit=async e=>{e.preventDefault(); $("#g-err").textContent=""; $("#g-go").disabled=true;
+  const email=$("#g-email").value.trim(), password=$("#g-pass").value;
+  const r=signup? await sb.auth.signUp({email,password}) : await sb.auth.signInWithPassword({email,password});
+  $("#g-go").disabled=false;
+  if(r.error){$("#g-err").textContent=r.error.message; return}
+  if(signup && !r.data.session){$("#g-err").textContent="Revisa tu correo para confirmar la cuenta y luego entra."; return}
+  boot();
+};
+$("#signout").onclick=async()=>{await sb.auth.signOut(); location.reload()};
+
+async function boot(){
+  const {data:{session}}=await sb.auth.getSession();
+  S.user=session?.user||null;
+  $("#gate").hidden=!!S.user; if(!S.user) return;
+  const {data:mem,error}=await sb.from("org_members").select("org_id, role, orgs(id,name,currency)");
+  if(error){ $("#gate").hidden=false; $("#g-err").textContent=error.message; return }
+  S.orgs=(mem||[]).map(m=>m.orgs).filter(Boolean);
+  if(!S.orgs.length){ $("#neworg").hidden=false; return }
+  S.org=S.orgs.find(o=>o.id===localStorage.getItem("atlas.org"))||S.orgs[0];
+  $("#neworg").hidden=true; $("#app").hidden=false;
+  await loadAll(); render();
+}
+$("#neworg-form").onsubmit=async e=>{e.preventDefault();
+  const {error}=await sb.rpc("create_org",{p_name:$("#o-name").value});
+  if(error){$("#o-err").textContent=error.message; return}
+  boot();
+};
+
+// ---------- data ----------
+async function loadAll(){
+  const o=S.org.id, p=S.period;
+  const [pr,un,pa,ex,me]=await Promise.all([
+    sb.from("properties").select("*").eq("org_id",o).order("name"),
+    sb.from("units").select("*").eq("org_id",o).order("name"),
+    sb.from("payments").select("*").eq("org_id",o).eq("period",p).order("paid_on",{ascending:false}),
+    sb.from("expenses").select("*").eq("org_id",o).gte("date",p+"-01").lt("date",nextPeriod(p)+"-01").order("date",{ascending:false}),
+    sb.from("org_members").select("user_id, role").eq("org_id",o),
+  ]);
+  S.props=pr.data||[]; S.units=un.data||[]; S.pays=pa.data||[]; S.exps=ex.data||[]; S.members=me.data||[];
+  const err=[pr,un,pa,ex].find(r=>r.error); if(err) toast("Error: "+err.error.message);
+}
+function nextPeriod(p,d=1){let [y,m]=p.split("-").map(Number); m+=d; while(m>12){m-=12;y++} while(m<1){m+=12;y--} return `${y}-${String(m).padStart(2,"0")}`}
+
+// Status of a unit in the selected month.
+function unitStatus(u){
+  if(u.status==="vacant") return {k:"vacant",t:"Vacía",paid:0};
+  const paid=S.pays.filter(p=>p.unit_id===u.id).reduce((a,p)=>a+ +p.amount,0);
+  if(paid>=+u.rent-0.005) return {k:"paid",t:"Pagado",paid};
+  if(paid>0) return {k:"partial",t:"Parcial",paid};
+  const due=new Date(+S.period.slice(0,4), +S.period.slice(5,7)-1, Math.min(u.due_day,28));
+  const late=new Date(today())>due;
+  return late? {k:"late",t:"Atrasado",paid} : {k:"due",t:"Por cobrar",paid};
+}
+const propName=id=>S.props.find(p=>p.id===id)?.name||"—";
+const unitName=id=>{const u=S.units.find(x=>x.id===id); return u? `${propName(u.property_id)} · ${u.name}` : "—"};
+
+// ---------- render ----------
+function render(){
+  $("#side-org").textContent=S.org.name;
+  $("#m-label").textContent=plabel(S.period);
+  $("#n-units").textContent=S.units.length||""; $("#n-pay").textContent=S.pays.length||""; $("#n-exp").textContent=S.exps.length||"";
+  document.querySelectorAll("#nav button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===S.view));
+  document.querySelectorAll("[data-view]").forEach(s=>s.hidden=s.dataset.view!==S.view);
+  const T={resumen:["Resumen","Este mes, de un vistazo"],unidades:["Unidades","Propiedades, inquilinos y rentas"],pagos:["Pagos","Lo que ya entró"],gastos:["Gastos","Lo que salió"],ajustes:["Ajustes","Negocio, equipo y cuenta"]}[S.view];
+  $("#title").textContent=T[0]; $("#tagline").textContent=T[1];
+  ({resumen:rResumen,unidades:rUnidades,pagos:rPagos,gastos:rGastos,ajustes:rAjustes})[S.view]();
+}
+
+function rResumen(){
+  const occ=S.units.filter(u=>u.status!=="vacant");
+  const expected=occ.reduce((a,u)=>a+ +u.rent,0);
+  const collected=S.pays.reduce((a,p)=>a+ +p.amount,0);
+  const spent=S.exps.reduce((a,e)=>a+ +e.amount,0);
+  const pending=Math.max(0,expected-collected);
+  const sts=occ.map(u=>({u,s:unitStatus(u)}));
+  const late=sts.filter(x=>x.s.k==="late").length;
+  const net=collected-spent;
+  $("#kpis").innerHTML=[
+    ["Renta esperada",money(expected),`${occ.length} unidad${occ.length===1?"":"es"} ocupada${occ.length===1?"":"s"}`,""],
+    ["Cobrado",money(collected),expected?Math.round(collected/expected*100)+"% del esperado":"—","ok"],
+    ["Pendiente",money(pending),late?`${late} atrasada${late===1?"":"s"}`:"nada atrasado",pending?(late?"crit":"warn"):""],
+    ["Gastos",money(spent),`${S.exps.length} movimiento${S.exps.length===1?"":"s"}`,""],
+    ["Flujo neto",money(net),"cobrado − gastos",net<0?"crit":"ok"],
+  ].map(([k,v,s,c])=>`<div class="glass"><div class="k">${k}</div><div class="v ${c}">${v}</div><div class="s">${s}</div></div>`).join("");
+
+  const pend=sts.filter(x=>x.s.k!=="paid").sort((a,b)=>(b.s.k==="late")-(a.s.k==="late"));
+  $("#pend-right").textContent=pend.length?`${pend.length} por cobrar`:"";
+  $("#pend").innerHTML=pend.length? `<table><tr><th>Unidad</th><th>Inquilino</th><th class="num">Falta</th><th></th></tr>`+pend.map(({u,s})=>`
+    <tr><td>${esc(propName(u.property_id))}<span class="sub">${esc(u.name)}</span></td>
+    <td>${esc(u.tenant_name)||"—"}<span class="sub"><span class="chip ${s.k}">${s.t}</span> · vence el ${u.due_day}</span></td>
+    <td class="num">${money(+u.rent-s.paid)}</td>
+    <td class="num"><button class="btn sm" data-paid="${u.id}">Cobrado</button></td></tr>`).join("")+`</table>`
+    : (occ.length? `<p class="none">Todo cobrado este mes.</p>` : `<p class="none">Aún no hay unidades. Empieza en <b>Unidades</b>.</p>`);
+  document.querySelectorAll("[data-paid]").forEach(b=>b.onclick=()=>quickPay(b.dataset.paid));
+
+  const mov=[...S.pays.map(p=>({d:p.paid_on,t:"in",a:+p.amount,l:unitName(p.unit_id),s:METHOD[p.method]})),
+             ...S.exps.map(e=>({d:e.date,t:"out",a:+e.amount,l:e.note||CAT[e.category],s:e.property_id?propName(e.property_id):"general"}))]
+    .sort((a,b)=>b.d.localeCompare(a.d)).slice(0,12);
+  $("#mov-right").textContent=mov.length?`últimos ${mov.length}`:"";
+  $("#mov").innerHTML=mov.length?`<table>`+mov.map(m=>`<tr><td class="mono" style="color:var(--muted);width:60px">${fdate(m.d)}</td><td>${esc(m.l)}<span class="sub">${esc(m.s)}</span></td><td class="num" style="color:${m.t==="in"?"var(--ok)":"var(--crit)"}">${m.t==="in"?"+":"−"}${money(m.a)}</td></tr>`).join("")+`</table>`:`<p class="none">Sin movimientos en ${plabel(S.period)}.</p>`;
+}
+
+function rUnidades(){
+  const box=$("#units");
+  if(!S.props.length){box.innerHTML=`<div class="glass"><div class="gbody"><p class="none" style="padding-top:14px">Agrega tu primera propiedad (un edificio, una casa, un local) y luego sus unidades.</p></div></div>`; return}
+  box.innerHTML=S.props.map(p=>{
+    const us=S.units.filter(u=>u.property_id===p.id);
+    const rent=us.filter(u=>u.status!=="vacant").reduce((a,u)=>a+ +u.rent,0);
+    return `<div class="glass"><header><h2 style="text-transform:none;letter-spacing:0;font-size:22px">${esc(p.name)}</h2><span class="right">${esc(p.address)}${p.address?" · ":""}${us.length} unidad${us.length===1?"":"es"} · ${money(rent)}/mes <button class="btn danger" data-eprop="${p.id}" title="Editar">✎</button></span></header>
+    <div class="gbody">${us.length?`<table><tr><th>Unidad</th><th>Inquilino</th><th class="num">Renta</th><th>Vence</th><th>Estado</th><th></th></tr>`+us.map(u=>{const s=unitStatus(u); return `<tr>
+      <td><b>${esc(u.name)}</b>${u.notes?`<span class="sub">${esc(u.notes)}</span>`:""}</td>
+      <td>${esc(u.tenant_name)||"—"}${u.tenant_phone?`<span class="sub">${esc(u.tenant_phone)}</span>`:""}</td>
+      <td class="num">${money(u.rent)}</td><td>día ${u.due_day}</td>
+      <td><span class="chip ${s.k}">${s.t}</span>${s.k==="partial"?`<span class="sub">${money(s.paid)} de ${money(u.rent)}</span>`:""}</td>
+      <td class="num"><button class="btn danger" data-eunit="${u.id}" title="Editar">✎</button></td></tr>`}).join("")+`</table>`:`<p class="none">Sin unidades todavía.</p>`}</div></div>`;
+  }).join("");
+  document.querySelectorAll("[data-eprop]").forEach(b=>b.onclick=()=>propForm(S.props.find(p=>p.id===b.dataset.eprop)));
+  document.querySelectorAll("[data-eunit]").forEach(b=>b.onclick=()=>unitForm(S.units.find(u=>u.id===b.dataset.eunit)));
+}
+
+function rPagos(){
+  $("#pays").innerHTML=S.pays.length?`<table><tr><th>Fecha</th><th>Unidad</th><th>Forma</th><th>Nota</th><th class="num">Monto</th><th></th></tr>`+S.pays.map(p=>`<tr>
+    <td class="mono">${fdate(p.paid_on)}</td><td>${esc(unitName(p.unit_id))}</td><td>${METHOD[p.method]}</td><td style="color:var(--muted)">${esc(p.note)}</td>
+    <td class="num">${money(p.amount)}</td><td class="num"><button class="btn danger" data-del="payments:${p.id}">Borrar</button></td></tr>`).join("")+
+    `<tr><td colspan="4"><b>Total</b></td><td class="num"><b>${money(S.pays.reduce((a,p)=>a+ +p.amount,0))}</b></td><td></td></tr></table>`
+    :`<p class="none">Ningún pago registrado en ${plabel(S.period)}.</p>`;
+  bindDel();
+}
+function rGastos(){
+  $("#exps").innerHTML=S.exps.length?`<table><tr><th>Fecha</th><th>Concepto</th><th>Propiedad</th><th>Categoría</th><th class="num">Monto</th><th></th></tr>`+S.exps.map(e=>`<tr>
+    <td class="mono">${fdate(e.date)}</td><td>${esc(e.note)||"—"}</td><td>${e.property_id?esc(propName(e.property_id)):"General"}${e.unit_id?`<span class="sub">${esc(S.units.find(u=>u.id===e.unit_id)?.name||"")}</span>`:""}</td><td>${CAT[e.category]}</td>
+    <td class="num">${money(e.amount)}</td><td class="num"><button class="btn danger" data-del="expenses:${e.id}">Borrar</button></td></tr>`).join("")+
+    `<tr><td colspan="4"><b>Total</b></td><td class="num"><b>${money(S.exps.reduce((a,e)=>a+ +e.amount,0))}</b></td><td></td></tr></table>`
+    :`<p class="none">Ningún gasto registrado en ${plabel(S.period)}.</p>`;
+  bindDel();
+}
+function bindDel(){document.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{
+  if(!confirm("¿Borrar este registro?")) return;
+  const [t,id]=b.dataset.del.split(":"); const {error}=await sb.from(t).delete().eq("id",id);
+  if(error) return toast(error.message); await loadAll(); render();
+})}
+function rAjustes(){
+  $("#s-name").value=S.org.name; $("#s-cur").value=S.org.currency;
+  $("#me").textContent=S.user.email;
+  $("#members").innerHTML=`${S.members.length} persona${S.members.length===1?"":"s"} con acceso a <b>${esc(S.org.name)}</b>.`;
+}
+$("#org-form").onsubmit=async e=>{e.preventDefault();
+  const {error}=await sb.from("orgs").update({name:$("#s-name").value.trim(),currency:$("#s-cur").value}).eq("id",S.org.id);
+  if(error) return toast(error.message); S.org.name=$("#s-name").value.trim(); S.org.currency=$("#s-cur").value; toast("Guardado"); render();
+};
+$("#inv-form").onsubmit=async e=>{e.preventDefault(); $("#inv-err").textContent="";
+  const {error}=await sb.rpc("add_member",{p_org:S.org.id,p_email:$("#inv-email").value});
+  if(error){$("#inv-err").textContent=error.message.includes("no account")?"Esa persona aún no tiene cuenta en Atlas; pídele que se registre primero.":error.message; return}
+  $("#inv-email").value=""; toast("Invitado"); await loadAll(); render();
+};
+
+// ---------- forms ----------
+function modal(title,html,onsubmit){
+  $("#md-title").textContent=title; $("#md-body").innerHTML=`<form id="md-form">${html}<div class="err" id="md-err"></div></form>`;
+  $("#modal").hidden=false; const f=$("#md-form"); f.querySelector("input,select")?.focus();
+  f.onsubmit=async e=>{e.preventDefault(); const err=await onsubmit(new FormData(f)); if(err){$("#md-err").textContent=err; return} $("#modal").hidden=true; await loadAll(); render()};
+  f.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$("#modal").hidden=true);
+}
+$("#md-x").onclick=()=>$("#modal").hidden=true;
+$("#modal").addEventListener("click",e=>{if(e.target.id==="modal") $("#modal").hidden=true});
+const opt=(list,sel,fmt)=>list.map(x=>`<option value="${x.id}" ${x.id===sel?"selected":""}>${esc(fmt(x))}</option>`).join("");
+const unitOpts=sel=>opt(S.units,sel,u=>`${propName(u.property_id)} · ${u.name}`);
+const propOpts=(sel,blank)=>(blank?`<option value="">General</option>`:"")+opt(S.props,sel,p=>p.name);
+const F={text:(n,l,v="",ph="")=>`<label>${l}<input type="text" name="${n}" value="${esc(v)}" placeholder="${esc(ph)}"></label>`};
+const del=(t,id)=>`<button class="btn danger" type="button" data-delrec="${t}:${id}">Eliminar</button>`;
+function bindDelRec(){document.querySelectorAll("[data-delrec]").forEach(b=>b.onclick=async()=>{
+  if(!confirm("¿Eliminar? Se borra también lo que dependa de esto.")) return;
+  const [t,id]=b.dataset.delrec.split(":"); const {error}=await sb.from(t).delete().eq("id",id);
+  if(error) return toast(error.message); $("#modal").hidden=true; await loadAll(); render();
+})}
+
+function propForm(p){
+  modal(p?"Editar propiedad":"Nueva propiedad",`<div class="form">
+    <label class="wide">Nombre <input type="text" name="name" value="${esc(p?.name||"")}" placeholder="Edificio Reforma 12" required></label>
+    <label class="wide">Dirección <input type="text" name="address" value="${esc(p?.address||"")}"></label>
+    <div class="actions wide">${p?del("properties",p.id):""}<button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit">Guardar</button></div></div>`,
+    async fd=>{const row={org_id:S.org.id,name:fd.get("name").trim(),address:fd.get("address").trim()};
+      const r=p? await sb.from("properties").update(row).eq("id",p.id) : await sb.from("properties").insert(row); return r.error?.message});
+  bindDelRec();
+}
+function unitForm(u){
+  if(!S.props.length) return propForm();
+  modal(u?"Editar unidad":"Nueva unidad",`<div class="form">
+    <label class="wide">Propiedad <select name="property_id">${propOpts(u?.property_id||S.props[0].id)}</select></label>
+    <label>Unidad <input type="text" name="name" value="${esc(u?.name||"")}" placeholder="Depto 4B" required></label>
+    <label>Renta mensual <input type="number" name="rent" min="0" step="0.01" value="${u?.rent||""}" required></label>
+    <label>Día de pago <input type="number" name="due_day" min="1" max="31" value="${u?.due_day||1}" required></label>
+    <label>Estado <select name="status"><option value="occupied" ${u?.status!=="vacant"?"selected":""}>Ocupada</option><option value="vacant" ${u?.status==="vacant"?"selected":""}>Vacía</option></select></label>
+    <label>Inquilino <input type="text" name="tenant_name" value="${esc(u?.tenant_name||"")}"></label>
+    <label>Teléfono <input type="tel" name="tenant_phone" value="${esc(u?.tenant_phone||"")}"></label>
+    <label class="wide">Notas <input type="text" name="notes" value="${esc(u?.notes||"")}" placeholder="Contrato vence marzo 2027"></label>
+    <div class="actions wide">${u?del("units",u.id):""}<button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit">Guardar</button></div></div>`,
+    async fd=>{const row={org_id:S.org.id}; for(const k of ["property_id","name","rent","due_day","status","tenant_name","tenant_phone","notes"]) row[k]=String(fd.get(k)??"").trim();
+      row.rent=+row.rent; row.due_day=+row.due_day;
+      const r=u? await sb.from("units").update(row).eq("id",u.id) : await sb.from("units").insert(row); return r.error?.message});
+  bindDelRec();
+}
+function payForm(unitId){
+  if(!S.units.length) return toast("Primero agrega una unidad.");
+  const u=S.units.find(x=>x.id===unitId)||S.units[0];
+  modal("Registrar pago",`<div class="form">
+    <label class="wide">Unidad <select name="unit_id" id="pf-unit">${unitOpts(u.id)}</select></label>
+    <label>Monto <input type="number" name="amount" id="pf-amt" min="0" step="0.01" value="${u.rent}" required></label>
+    <label>Fecha <input type="date" name="paid_on" value="${today()}" required></label>
+    <label>Mes de renta <input type="text" name="period" value="${S.period}" pattern="\\d{4}-\\d{2}" required></label>
+    <label>Forma <select name="method">${Object.entries(METHOD).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
+    <label class="wide">Nota <input type="text" name="note" placeholder="Pagó la mitad, resto el 20"></label>
+    <div class="actions wide"><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit">Guardar</button></div></div>`,
+    async fd=>{const row={org_id:S.org.id,unit_id:fd.get("unit_id"),amount:+fd.get("amount"),paid_on:fd.get("paid_on"),period:fd.get("period"),method:fd.get("method"),note:fd.get("note").trim()};
+      const r=await sb.from("payments").insert(row); if(!r.error && row.period!==S.period){S.period=row.period} return r.error?.message});
+  $("#pf-unit").onchange=e=>{const x=S.units.find(z=>z.id===e.target.value); if(x) $("#pf-amt").value=x.rent};
+}
+async function quickPay(unitId){
+  const u=S.units.find(x=>x.id===unitId); const s=unitStatus(u); const amt=+u.rent-s.paid;
+  const {error}=await sb.from("payments").insert({org_id:S.org.id,unit_id:u.id,amount:amt,period:S.period,paid_on:today(),method:"transfer"});
+  if(error) return toast(error.message); toast(`${u.name}: ${money(amt)} cobrado`); await loadAll(); render();
+}
+function expForm(){
+  modal("Registrar gasto",`<div class="form">
+    <label>Monto <input type="number" name="amount" min="0" step="0.01" required></label>
+    <label>Fecha <input type="date" name="date" value="${today()}" required></label>
+    <label>Categoría <select name="category">${Object.entries(CAT).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
+    <label>Propiedad <select name="property_id" id="ef-prop">${propOpts("",true)}</select></label>
+    <label class="wide">Unidad (opcional) <select name="unit_id" id="ef-unit"><option value="">—</option>${unitOpts("")}</select></label>
+    <label class="wide">Concepto <input type="text" name="note" placeholder="Plomero, fuga en el baño" required></label>
+    <div class="actions wide"><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit">Guardar</button></div></div>`,
+    async fd=>{const row={org_id:S.org.id,amount:+fd.get("amount"),date:fd.get("date"),category:fd.get("category"),property_id:fd.get("property_id")||null,unit_id:fd.get("unit_id")||null,note:fd.get("note").trim()};
+      if(row.unit_id && !row.property_id) row.property_id=S.units.find(u=>u.id===row.unit_id)?.property_id||null;
+      const r=await sb.from("expenses").insert(row); if(!r.error && row.date.slice(0,7)!==S.period) S.period=row.date.slice(0,7); return r.error?.message});
+}
+
+// ---------- wiring ----------
+$("#nav").onclick=e=>{const b=e.target.closest("button"); if(!b) return; S.view=b.dataset.v; render()};
+$("#m-prev").onclick=async()=>{S.period=nextPeriod(S.period,-1); await loadAll(); render()};
+$("#m-next").onclick=async()=>{S.period=nextPeriod(S.period,1); await loadAll(); render()};
+$("#add-prop").onclick=()=>propForm(); $("#add-unit").onclick=()=>unitForm();
+$("#add-pay").onclick=()=>payForm(); $("#add-exp").onclick=()=>expForm();
+document.addEventListener("keydown",e=>{if(e.key==="Escape") $("#modal").hidden=true});
+sb.auth.onAuthStateChange((ev)=>{ if(ev==="SIGNED_OUT"){$("#app").hidden=true; $("#gate").hidden=false} });
+boot();
+</script>
+</body>
+</html>
