@@ -392,7 +392,7 @@ $("#g-toggle").onclick=()=>{signup=!signup; $("#g-go").textContent=signup?"Crear
   $("#g-switch").firstChild.textContent=signup?"¿Ya tienes cuenta? ":"¿Primera vez? "; $("#g-toggle").textContent=signup?"Entrar":"Crear cuenta"; $("#g-err").textContent=""};
 $("#gate-form").onsubmit=async e=>{e.preventDefault(); $("#g-err").textContent=""; $("#g-go").disabled=true;
   const email=$("#g-email").value.trim(), password=$("#g-pass").value;
-  const r=signup? await sb.auth.signUp({email,password}) : await sb.auth.signInWithPassword({email,password});
+  const r=signup? await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}}) : await sb.auth.signInWithPassword({email,password});
   $("#g-go").disabled=false;
   if(r.error){$("#g-err").textContent=r.error.message; return}
   if(signup && !r.data.session){$("#g-err").textContent="Revisa tu correo para confirmar la cuenta y luego entra."; return}
