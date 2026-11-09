@@ -135,3 +135,10 @@ end $$;
 grant execute on function public.my_org_ids() to authenticated;
 grant execute on function public.create_org(text) to authenticated;
 grant execute on function public.add_member(uuid, text) to authenticated;
+
+-- ---------- v0.2: contracts, bank matching, receipts ----------
+alter table public.units add column contract_end date;            -- when the lease ends
+alter table public.units add column match text not null default ''; -- words that identify this tenant on a bank alert
+alter table public.payments add column source text not null default 'manual' check (source in ('manual','bank'));
+alter table public.payments add column bank_ref text not null default ''; -- fingerprint of the bank alert, so one alert is never imported twice
+create unique index payments_bank_ref_uniq on public.payments (org_id, bank_ref) where bank_ref <> '';

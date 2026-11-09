@@ -25,6 +25,17 @@ Which units paid this month, who is late, what was spent, and the net — in one
 - `payments` — a rent payment against a unit for a `period` ("2026-11"); amount, date, method
 - `expenses` — a cost against the org, optionally a property/unit; category
 
+## v0.2 (from the first questionnaire answers)
+
+- **Banco** tab: paste bank alerts (SMS/email) or upload a statement CSV; Atlas finds credits (amount, date, name),
+  proposes the unit (keywords in `units.match`, tenant name, amount = rent) and the user confirms. Each alert gets a
+  fingerprint (`payments.bank_ref`, unique per org) so nothing is imported twice. Imported rows carry `source = 'bank'`.
+- Contracts: `units.contract_end`; "Contratos por vencer" card on Resumen (next 90 days) and a chip on Unidades.
+- Tenant history: click any unit name → every payment by month.
+- "Reporte del mes" and per-payment "Recibo": printable views (browser print → PDF).
+- WhatsApp reminder link per pending unit (wa.me with a prefilled message; needs the tenant's phone).
+- Backgrounds: one photograph per section in `img/` (fuji, lake, falls, shore).
+
 ## Status logic (per unit, per selected month)
 
 paid: payments ≥ rent · partial: 0 < payments < rent · late: nothing paid and today is past the due day ·
