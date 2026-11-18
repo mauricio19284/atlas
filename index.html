@@ -149,6 +149,18 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 .gate h1{font-size:44px; letter-spacing:.3em; text-transform:uppercase; font-weight:600; text-align:center}
 .gate .sub{text-align:center; color:var(--muted); font-size:13px; margin:4px 0 22px}
 .gate form{display:flex; flex-direction:column; gap:12px}
+.gate .err:not(:empty){display:flex; gap:9px; align-items:flex-start; margin-top:2px; padding:10px 12px; border-radius:8px; background:var(--crit-soft); border:1px solid rgba(142,59,46,.4); font-weight:600; line-height:1.4}
+.gate .err:not(:empty)::before{content:"!"; flex:none; width:18px; height:18px; border-radius:50%; background:var(--crit); color:#fff; font-size:12px; font-weight:700; display:grid; place-items:center; margin-top:1px}
+.gate .err.info:not(:empty){background:var(--ok-soft); border-color:rgba(44,106,67,.4); color:var(--ok)}
+.gate .err.info:not(:empty)::before{content:"✓"; background:var(--ok)}
+.gate input.bad{border-color:var(--crit); box-shadow:0 0 0 3px var(--crit-soft)}
+.pw{position:relative; display:block}
+.pw input{padding-right:44px}
+.pw button{position:absolute; right:4px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:34px; height:34px; padding:0; border:0; border-radius:6px; background:none; color:var(--muted); cursor:pointer}
+.pw button:hover{color:var(--ink); background:var(--ground)}
+.pw button svg{width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.pw button .off{display:none}
+.pw button[aria-pressed="true"] .off{display:block}
 .gate .switch{text-align:center; font-size:13px; color:var(--muted); margin-top:14px}
 .gate .switch button{background:none; border:0; text-decoration:underline; cursor:pointer; padding:0; color:var(--ink)}
 
@@ -206,7 +218,7 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
     <p class="sub" data-en="Rent and cash flow for your properties">Rentas y flujo de tus propiedades</p>
     <form id="gate-form">
       <label><span data-en="Email">Correo</span> <input type="email" id="g-email" autocomplete="email" required></label>
-      <label><span data-en="Password">Contraseña</span> <input type="password" id="g-pass" autocomplete="current-password" minlength="6" required></label>
+      <label><span data-en="Password">Contraseña</span> <span class="pw"><input type="password" id="g-pass" autocomplete="current-password" minlength="6" required><button type="button" id="g-eye" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="off" d="M4 4l16 16"/></svg></button></span></label>
       <button class="btn" id="g-go" type="submit">Entrar</button>
       <div class="err" id="g-err"></div>
     </form>
@@ -415,13 +427,33 @@ const WHY=()=>LANG==="en"?{kw:"keyword",name:"name",amt:"amount = rent",unit:"un
 let signup=false;
 function gateText(){$("#g-go").textContent=signup?t("Crear cuenta","Create account"):t("Entrar","Sign in");
   $("#g-switch").firstChild.textContent=signup?t("¿Ya tienes cuenta? ","Already have an account? "):t("¿Primera vez? ","First time? "); $("#g-toggle").textContent=signup?t("Entrar","Sign in"):t("Crear cuenta","Create account")}
-$("#g-toggle").onclick=()=>{signup=!signup; gateText(); $("#g-err").textContent=""};
-$("#gate-form").onsubmit=async e=>{e.preventDefault(); $("#g-err").textContent=""; $("#g-go").disabled=true;
+// sign-in feedback: a clear message in the chosen language, plus a red outline on the fields to fix
+let gErr=null;
+function authMsg(m){const x=(m||"").toLowerCase();
+  if(x.includes("invalid login")) return [t("Correo o contraseña incorrectos. Revísalos e inténtalo de nuevo.","Incorrect email or password. Check them and try again."),["#g-email","#g-pass"]];
+  if(x.includes("not confirmed")) return [t("Aún no confirmas tu correo. Abre el enlace que te enviamos y luego entra.","Your email isn't confirmed yet. Open the link we sent you, then sign in."),["#g-email"]];
+  if(x.includes("already registered")) return [t("Ese correo ya tiene cuenta. Entra con tu contraseña.","That email already has an account. Sign in with your password."),["#g-email"]];
+  if(x.includes("password")) return [t("La contraseña no es válida: usa al menos 6 caracteres.","That password isn't valid: use at least 6 characters."),["#g-pass"]];
+  if(x.includes("email")&&(x.includes("invalid")||x.includes("valid"))) return [t("Ese correo no parece válido.","That email doesn't look valid."),["#g-email"]];
+  if(x.includes("rate limit")||x.includes("too many")) return [t("Demasiados intentos. Espera un momento e inténtalo de nuevo.","Too many attempts. Wait a moment and try again."),[]];
+  if(x.includes("fetch")||x.includes("network")) return [t("No hay conexión. Revisa tu internet e inténtalo de nuevo.","No connection. Check your internet and try again."),[]];
+  return [m,[]];
+}
+function gateErr(m,info){gErr=m?{m,info}:null; const e=$("#g-err"); document.querySelectorAll("#gate-form input").forEach(i=>i.classList.remove("bad"));
+  e.classList.toggle("info",!!info); if(!m){e.textContent=""; return}
+  if(info){e.textContent=t("Revisa tu correo para confirmar la cuenta y luego entra.","Check your email to confirm your account, then sign in."); return}
+  const [txt,bad]=authMsg(m); e.textContent=txt; bad.forEach(q=>$(q).classList.add("bad"));
+}
+function eyeText(){const on=$("#g-pass").type==="text", l=on?t("Ocultar contraseña","Hide password"):t("Mostrar contraseña","Show password"); const b=$("#g-eye"); b.title=l; b.setAttribute("aria-label",l); b.setAttribute("aria-pressed",on)}
+$("#g-eye").onclick=()=>{const i=$("#g-pass"); i.type=i.type==="password"?"text":"password"; eyeText(); i.focus()};
+document.querySelectorAll("#gate-form input").forEach(i=>i.addEventListener("input",()=>{if(gErr&&!gErr.info) gateErr("")}));
+$("#g-toggle").onclick=()=>{signup=!signup; gateText(); gateErr("")};
+$("#gate-form").onsubmit=async e=>{e.preventDefault(); gateErr(""); $("#g-go").disabled=true;
   const email=$("#g-email").value.trim(), password=$("#g-pass").value;
   const r=signup? await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}}) : await sb.auth.signInWithPassword({email,password});
   $("#g-go").disabled=false;
-  if(r.error){$("#g-err").textContent=r.error.message; return}
-  if(signup && !r.data.session){$("#g-err").textContent=t("Revisa tu correo para confirmar la cuenta y luego entra.","Check your email to confirm your account, then sign in."); return}
+  if(r.error){gateErr(r.error.message||"error"); return}
+  if(signup && !r.data.session){gateErr("confirm",true); return}
   boot();
 };
 $("#signout").onclick=async()=>{await sb.auth.signOut(); location.reload()};
@@ -431,7 +463,7 @@ async function boot(){
   S.user=session?.user||null;
   $("#gate").hidden=!!S.user; if(!S.user) return;
   const {data:mem,error}=await sb.from("org_members").select("org_id, role, orgs(id,name,currency)");
-  if(error){ $("#gate").hidden=false; $("#g-err").textContent=error.message; return }
+  if(error){ $("#gate").hidden=false; gateErr(error.message); return }
   S.orgs=(mem||[]).map(m=>m.orgs).filter(Boolean);
   if(!S.orgs.length){ $("#neworg").hidden=false; return }
   let saved=null; try{saved=localStorage.getItem("atlas.org")}catch(e){}
@@ -825,7 +857,7 @@ function applyLang(){
   document.querySelectorAll("[data-en-ph]").forEach(e=>{if(e.dataset.esPh==null) e.dataset.esPh=e.placeholder; e.placeholder=LANG==="en"?e.dataset.enPh:e.dataset.esPh});
   document.querySelectorAll("[data-en-title]").forEach(e=>{if(e.dataset.esTitle==null) e.dataset.esTitle=e.title; e.title=LANG==="en"?e.dataset.enTitle:e.dataset.esTitle});
   document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===LANG));
-  gateText();
+  gateText(); eyeText(); if(gErr) gateErr(gErr.m,gErr.info);
 }
 function setLang(l){
   LANG=l==="en"?"en":"es"; try{localStorage.setItem("atlas.lang",LANG)}catch(e){}
