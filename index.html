@@ -134,9 +134,7 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 .lang button{background:none; border:0; border-radius:6px; padding:6px 12px; font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; color:var(--muted); transition:background .15s,color .15s}
 .lang button:hover{background:var(--ground)}
 .lang button[aria-pressed="true"]{background:#1d1b18; color:#f6f2ea}
-.headr{display:flex; flex-direction:column; align-items:flex-end; gap:10px}
-.gate{position:relative}
-.gate > .lang{position:absolute; top:18px; right:18px}
+.head .lang{margin:2px 0 18px}
 
 /* ---------- modal ---------- */
 .modal{position:fixed; inset:0; z-index:30; display:flex; align-items:flex-start; justify-content:center; padding:6vh 16px; background:rgba(20,16,8,.4); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); overflow:auto}
@@ -200,7 +198,7 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
   .side nav button{padding:8px 10px; font-size:10.5px; letter-spacing:.14em}
   .side .motto{display:none}
   .head h1{font-size:46px}
-  .headr{align-items:flex-start; width:100%}
+  .head .lang{margin-bottom:12px}
   .grid.kpi{grid-template-columns:1fr 1fr; gap:10px}
   .kpi .glass{padding:14px 16px 12px}
   .kpi .v{font-size:26px}
@@ -212,7 +210,6 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 
 <!-- ============ sign in ============ -->
 <div id="gate" class="gate" hidden>
-  <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es">Español</button><button type="button" data-lang="en">English</button></div>
   <div class="glass">
     <h1>Atlas</h1>
     <p class="sub" data-en="Rent and cash flow for your properties">Rentas y flujo de tus propiedades</p>
@@ -228,7 +225,6 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 
 <!-- ============ first org ============ -->
 <div id="neworg" class="gate" hidden>
-  <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es">Español</button><button type="button" data-lang="en">English</button></div>
   <div class="glass">
     <h1>Atlas</h1>
     <p class="sub" data-en="What is your business or portfolio called?">¿Cómo se llama tu negocio o portafolio?</p>
@@ -259,16 +255,14 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
   <main class="main">
     <div class="head">
       <div>
+        <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es">Español</button><button type="button" data-lang="en">English</button></div>
         <h1 id="title">Resumen</h1>
         <div class="tag"><i></i><span id="tagline">Este mes, de un vistazo</span></div>
       </div>
-      <div class="headr">
-        <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es">Español</button><button type="button" data-lang="en">English</button></div>
-        <div class="month">
-          <button id="m-prev" title="Mes anterior" data-en-title="Previous month">‹</button>
-          <b id="m-label"></b>
-          <button id="m-next" title="Mes siguiente" data-en-title="Next month">›</button>
-        </div>
+      <div class="month">
+        <button id="m-prev" title="Mes anterior" data-en-title="Previous month">‹</button>
+        <b id="m-label"></b>
+        <button id="m-next" title="Mes siguiente" data-en-title="Next month">›</button>
       </div>
     </div>
 
