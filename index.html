@@ -90,6 +90,61 @@ button,input,select,textarea{font:inherit; color:inherit}
 .kpi .v.ok{color:var(--ok)} .kpi .v.crit{color:var(--crit)} .kpi .v.warn{color:var(--warn)}
 .two{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr)); gap:16px; align-items:start}
 
+/* ---------- summary as a home page: one photograph, floating bar, hero, hexagons ---------- */
+body[data-bg=arch]::before{background-image:url(img/arch.jpg); background-position:50% 30%; opacity:1}
+body[data-view=resumen]{background:#d6d8da}
+body[data-view=resumen]::after{background:
+  linear-gradient(100deg,rgba(10,11,14,.62) 0,rgba(10,11,14,.3) 32%,rgba(10,11,14,0) 58%),
+  linear-gradient(260deg,rgba(10,11,14,.3) 0,rgba(10,11,14,.06) 22%,rgba(10,11,14,0) 38%),
+  linear-gradient(180deg,rgba(10,11,14,.42) 0,rgba(10,11,14,.1) 26%,rgba(10,11,14,0) 46%),
+  linear-gradient(180deg,rgba(214,216,218,0) 56%,rgba(214,216,218,.5) 80%,rgba(214,216,218,.88) 100%)}
+.eyebrow,.heroside{display:none}
+body[data-view=resumen] .app{grid-template-columns:minmax(0,1fr); gap:0; max-width:1340px; padding-top:0}
+body[data-view=resumen] .side{position:static; flex-direction:row; align-items:center; flex-wrap:wrap; gap:4px 28px; min-height:76px; padding:8px 0; border-radius:0; overflow:visible;
+  background:none; border:0; box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none}
+body[data-view=resumen] .side h2{padding:0; font-size:16px; font-weight:500; letter-spacing:.38em; text-shadow:0 1px 18px rgba(0,0,0,.45)}
+body[data-view=resumen] .side nav{flex-direction:row; flex-wrap:wrap; gap:2px 4px; padding:0; width:auto}
+body[data-view=resumen] .side nav button{position:relative; padding:10px 10px; border-radius:0; background:none; box-shadow:none; font-size:10px; font-weight:500; letter-spacing:.2em; color:rgba(255,255,255,.76); text-shadow:0 1px 14px rgba(0,0,0,.4)}
+body[data-view=resumen] .side nav button:hover,body[data-view=resumen] .side nav button[aria-pressed="true"]{color:#fff; background:none; box-shadow:none}
+body[data-view=resumen] .side nav button[aria-pressed="true"]::after{content:""; position:absolute; left:10px; right:10px; bottom:4px; height:1px; background:#fff}
+body[data-view=resumen] .side nav .n{margin-left:0; color:rgba(255,255,255,.66)}
+body[data-view=resumen] .side nav{order:1}
+body[data-view=resumen] .side .org{display:block; order:2; margin-left:auto; padding:2px 0 2px 26px; border-left:1px solid rgba(255,255,255,.32); max-width:260px;
+  font-size:10px; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.86); text-shadow:0 1px 14px rgba(0,0,0,.4)}
+body[data-view=resumen] .side .motto{display:none}
+body[data-view=resumen] .head{display:grid; grid-template-columns:minmax(0,1.05fr) auto; gap:22px 60px; align-items:center; min-height:min(66vh,640px); padding:14px 0 54px; border-radius:0;
+  background:none; border:0; box-shadow:none; -webkit-backdrop-filter:none; backdrop-filter:none}
+body[data-view=resumen] .head > div:first-child{grid-area:1/1; align-self:end; display:flex; flex-direction:column; align-items:flex-start; gap:18px; min-width:0}
+body[data-view=resumen] .head .lang{margin:0}
+body[data-view=resumen] .eyebrow{display:block; font-size:10.5px; font-weight:500; letter-spacing:.26em; text-transform:uppercase; color:rgba(255,255,255,.86); text-shadow:0 1px 16px rgba(0,0,0,.5)}
+body[data-view=resumen] .head h1{font-weight:400; font-size:clamp(60px,9vw,128px); line-height:.9; letter-spacing:-.012em; color:#fff; text-shadow:0 2px 40px rgba(0,0,0,.45)}
+body[data-view=resumen] .tag{padding-top:0; gap:20px; font-size:9.5px; font-weight:500; letter-spacing:.3em; color:rgba(255,255,255,.9); text-shadow:0 1px 16px rgba(0,0,0,.5)}
+body[data-view=resumen] .tag i{width:68px; height:1px; background:rgba(255,255,255,.6)}
+body[data-view=resumen] .head .month{grid-area:2/1; justify-self:start; align-self:start}
+body[data-view=resumen] .heroside{grid-area:1/2/3/3; display:flex; flex-direction:column; align-items:flex-end; gap:22px; min-width:0}
+.hive{--hw:128px; --hh:calc(var(--hw) * 1.1547); display:grid; grid-template-columns:repeat(7,calc(var(--hw) / 2)); grid-auto-rows:calc(var(--hh) * .75); padding-bottom:calc(var(--hh) * .25)}
+.hex{grid-column:span 2; width:var(--hw); height:var(--hh); padding:3px; background:none; border:0; cursor:pointer}
+.hex:nth-child(1){grid-area:1/1/auto/span 2} .hex:nth-child(2){grid-area:1/3/auto/span 2} .hex:nth-child(3){grid-area:1/5/auto/span 2}
+.hex:nth-child(4){grid-area:2/2/auto/span 2} .hex:nth-child(5){grid-area:2/4/auto/span 2} .hex:nth-child(6){grid-area:2/6/auto/span 2}
+.hx{position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; width:100%; height:100%; background:rgba(255,255,255,.62); color:#161412;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); transition:background .2s, transform .2s}
+.hx::before{content:""; position:absolute; inset:1px; background:rgba(255,255,255,.52); -webkit-backdrop-filter:blur(10px) saturate(130%); backdrop-filter:blur(10px) saturate(130%);
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); transition:background .2s}
+.hx svg,.hx b,.hx em{position:relative}
+.hx svg{width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:1.25; stroke-linecap:round; stroke-linejoin:round}
+.hx em{font-style:normal; font-weight:500; font-size:8.5px; letter-spacing:.22em; text-transform:uppercase; text-align:center; padding-inline:6px}
+.hx b{font-weight:500; font-size:13px; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:.03em}
+.hx b:empty{display:none}
+.hex:hover .hx{background:rgba(255,255,255,.98); transform:scale(1.035)}
+.hex:hover .hx::before{background:#fff}
+.hex.primary .hx{background:rgba(255,255,255,.9)}
+.hex.primary .hx::before{background:rgba(255,255,255,.78)}
+.hex:focus-visible{outline:0}
+.hex:focus-visible .hx::before{background:#fff}
+.sideline{max-width:170px; padding-left:16px; border-left:1px solid rgba(255,255,255,.45); color:rgba(255,255,255,.86); font-size:9px; font-weight:500; letter-spacing:.24em; text-transform:uppercase; line-height:2.1;
+  text-shadow:0 1px 3px rgba(0,0,0,.5), 0 1px 18px rgba(0,0,0,.55)}
+body[data-view=resumen] .glass{border-radius:18px; -webkit-backdrop-filter:blur(30px) saturate(150%); backdrop-filter:blur(30px) saturate(150%)}
+
 /* ---------- tables & rows ---------- */
 table{width:100%; border-collapse:collapse; font-size:14px}
 th{font-size:10.5px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); text-align:left; padding:8px 8px 8px 0; border-bottom:1px solid var(--line)}
@@ -230,6 +285,14 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
   .kpi .glass{padding:14px 16px 12px}
   .kpi .v{font-size:26px}
   .cand{grid-template-columns:1fr; gap:8px}
+  body[data-view=resumen] .app{padding-top:6px}
+  body[data-view=resumen] .side .org{display:none}
+  body[data-view=resumen] .side nav{width:100%}
+  body[data-view=resumen] .head{grid-template-columns:minmax(0,1fr); min-height:0; padding:26px 0 30px; gap:20px}
+  body[data-view=resumen] .head h1{font-size:64px}
+  body[data-view=resumen] .heroside{grid-area:auto; align-items:flex-start}
+  body[data-view=resumen] .head .month{grid-area:auto}
+  .hive{--hw:98px}
 }
 </style>
 </head>
@@ -292,6 +355,7 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
     <div class="head">
       <div>
         <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es">Español</button><button type="button" data-lang="en">English</button></div>
+        <div class="eyebrow" id="res-hint"></div>
         <h1 id="title">Resumen</h1>
         <div class="tag"><i></i><span id="tagline">Este mes, de un vistazo</span></div>
       </div>
@@ -300,14 +364,14 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
         <b id="m-label"></b>
         <button id="m-next" title="Mes siguiente" data-en-title="Next month">›</button>
       </div>
+      <div class="heroside">
+        <nav class="hive" id="hive" aria-label="Secciones"></nav>
+        <div class="sideline" data-en="What isn't measured doesn't get collected.">Lo que no se mide, no se cobra.</div>
+      </div>
     </div>
 
     <!-- resumen -->
     <section data-view="resumen">
-      <div class="bar" style="margin-bottom:14px">
-        <span class="hint" id="res-hint"></span>
-        <button class="btn ghost" id="report" data-en="Monthly report">Reporte del mes</button>
-      </div>
       <div class="grid kpi" id="kpis"></div>
       <div class="two" style="margin-top:16px">
         <div class="glass">
@@ -432,7 +496,7 @@ const t=(es,en)=>LANG==="en"?en:es;
 // ---------- state ----------
 const S={user:null, org:null, orgs:[], props:[], units:[], pays:[], exps:[], members:[], cands:[],
   period:new Date().toISOString().slice(0,7), view:"resumen"};
-const BG={resumen:"fuji",unidades:"lake",pagos:"falls",banco:"falls",gastos:"shore",ajustes:"lake"};
+const BG={resumen:"arch",unidades:"lake",pagos:"falls",banco:"falls",gastos:"shore",ajustes:"lake"};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=n=>new Intl.NumberFormat("es-MX",{style:"currency",currency:S.org?.currency||"MXN",maximumFractionDigits:0}).format(+n||0);
@@ -551,7 +615,7 @@ const waLink=(u,amount)=>{
 
 // ---------- render ----------
 function render(){
-  document.body.dataset.bg=BG[S.view]||"fuji";
+  document.body.dataset.bg=BG[S.view]||"fuji"; document.body.dataset.view=S.view;
   $("#side-org").textContent=S.org.name;
   $("#m-label").textContent=plabel(S.period);
   $("#n-units").textContent=S.units.length||""; $("#n-pay").textContent=S.pays.length||""; $("#n-exp").textContent=S.exps.length||"";
@@ -573,7 +637,7 @@ function rResumen(){
   const sts=occ.map(u=>({u,s:unitStatus(u)}));
   const late=sts.filter(x=>x.s.k==="late").length;
   const net=collected-spent;
-  $("#res-hint").textContent=t(`${S.props.length} propiedad${S.props.length===1?"":"es"} · ${S.units.length} unidad${S.units.length===1?"":"es"}`,
+  $("#res-hint").textContent=S.org.name+" · "+t(`${S.props.length} propiedad${S.props.length===1?"":"es"} · ${S.units.length} unidad${S.units.length===1?"":"es"}`,
     `${S.props.length} propert${S.props.length===1?"y":"ies"} · ${S.units.length} unit${S.units.length===1?"":"s"}`);
   $("#kpis").innerHTML=[
     [t("Renta esperada","Expected rent"),money(expected),t(`${occ.length} unidad${occ.length===1?"":"es"} ocupada${occ.length===1?"":"s"}`,`${occ.length} occupied unit${occ.length===1?"":"s"}`),""],
@@ -583,6 +647,16 @@ function rResumen(){
     [t("Flujo neto","Net cash flow"),money(net),t("cobrado − gastos","collected − expenses"),net<0?"crit":"ok"],
   ].map(([k,v,s,c])=>`<div class="glass"><div class="k">${k}</div><div class="v ${c}">${v}</div><div class="s">${s}</div></div>`).join("");
 
+  const I={u:'<path d="M3.4 20.6V8.2L12 3.4l8.6 4.8v12.4M3.4 20.6h17.2M9.4 20.6v-5.4h5.2v5.4M8 10.6h1.6M14.4 10.6H16"/>',
+    p:'<path d="M12 3.2v17.6M16.4 7.4c-.7-1.3-2.3-2.1-4.3-2.1-2.5 0-4.3 1.2-4.3 3.1 0 4.4 9 2.2 9 6.8 0 2-1.9 3.3-4.6 3.3-2.3 0-4.1-.9-4.9-2.5"/>',
+    g:'<path d="M5.4 3.2h13.2v17.6l-2.2-1.5-2.2 1.5-2.2-1.5-2.2 1.5-2.2-1.5-2.2 1.5V3.2Z"/><path d="M8.6 8.2h6.8M8.6 12h6.8"/>',
+    b:'<path d="M3 9.4 12 4l9 5.4M4.6 9.6h14.8M6.4 10v7.4M10.2 10v7.4M13.8 10v7.4M17.6 10v7.4M3.6 20h16.8M4.6 17.6h14.8"/>',
+    r:'<path d="M14 2.9H6.4a1.8 1.8 0 0 0-1.8 1.8v14.6a1.8 1.8 0 0 0 1.8 1.8h11.2a1.8 1.8 0 0 0 1.8-1.8V8.2L14 2.9Z"/><path d="M14 2.9v5.3h5.4M8.2 13h7.6M8.2 16.6h5.2"/>',
+    a:'<circle cx="12" cy="12" r="3.1"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8"/>'};
+  $("#hive").innerHTML=[["unidades",I.u,S.units.length||"",t("Unidades","Units"),1],["pagos",I.p,collected?money(collected):"",t("Pagos","Payments")],["gastos",I.g,spent?money(spent):"",t("Gastos","Expenses")],
+    ["banco",I.b,"",t("Banco","Bank")],["report",I.r,"",t("Reporte","Report")],["ajustes",I.a,"",t("Ajustes","Settings")]]
+    .map(([go,ic,n,l,pr])=>`<button class="hex${pr?" primary":""}" data-go="${go}"><span class="hx"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg><b>${n}</b><em>${l}</em></span></button>`).join("");
+  $("#hive").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{if(b.dataset.go==="report") return report(); S.view=b.dataset.go; render(); scrollTo(0,0)});
   const pend=sts.filter(x=>x.s.k!=="paid").sort((a,b)=>(b.s.k==="late")-(a.s.k==="late"));
   $("#pend-right").textContent=pend.length?t(`${pend.length} por cobrar`,`${pend.length} to collect`):"";
   $("#pend").innerHTML=pend.length? `<table><tr><th>${t("Unidad","Unit")}</th><th>${t("Inquilino","Tenant")}</th><th class="num">${t("Falta","Owed")}</th><th></th></tr>`+pend.map(({u,s})=>{const wa=waLink(u,+u.rent-s.paid); return `
@@ -869,7 +943,6 @@ function receipt(p){
     <div class="big">${money2(p.amount)}</div>${p.note?`<div class="meta">${esc(p.note)}</div>`:""}
     <div class="sign"><div>${t("Recibió","Received by")}</div><div>${t("Entregó","Paid by")}</div></div></div>`);
 }
-$("#report").onclick=report;
 
 // ---------- wiring ----------
 $("#nav").onclick=e=>{const b=e.target.closest("button"); if(!b) return; S.view=b.dataset.v; render()};
