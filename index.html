@@ -141,26 +141,53 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 .modal .glass{width:min(640px,100%); background:linear-gradient(170deg,rgba(250,250,248,.97),rgba(240,240,236,.95))}
 .modal .glass.wide{width:min(900px,100%)}
 
-/* ---------- gate (sign in) ---------- */
-.gate{min-height:100vh; display:grid; place-items:center; padding:24px}
-.gate .glass{width:min(420px,100%); padding:34px 32px 28px}
-.gate h1{font-size:44px; letter-spacing:.3em; text-transform:uppercase; font-weight:600; text-align:center}
-.gate .sub{text-align:center; color:var(--muted); font-size:13px; margin:4px 0 22px}
-.gate form{display:flex; flex-direction:column; gap:12px}
-.gate .err:not(:empty){display:flex; gap:9px; align-items:flex-start; margin-top:2px; padding:10px 12px; border-radius:8px; background:var(--crit-soft); border:1px solid rgba(142,59,46,.4); font-weight:600; line-height:1.4}
-.gate .err:not(:empty)::before{content:"!"; flex:none; width:18px; height:18px; border-radius:50%; background:var(--crit); color:#fff; font-size:12px; font-weight:700; display:grid; place-items:center; margin-top:1px}
-.gate .err.info:not(:empty){background:var(--ok-soft); border-color:rgba(44,106,67,.4); color:var(--ok)}
-.gate .err.info:not(:empty)::before{content:"✓"; background:var(--ok)}
-.gate input.bad{border-color:var(--crit); box-shadow:0 0 0 3px var(--crit-soft)}
+/* ---------- gate (sign in): night-city video, headline bottom-left, dark glass form on the right ---------- */
+.gatebg{position:fixed; inset:0; z-index:0; overflow:hidden; background:
+  radial-gradient(60% 50% at 72% 62%,rgba(70,96,150,.28),transparent 70%),
+  radial-gradient(40% 40% at 18% 30%,rgba(40,60,90,.22),transparent 70%), #04050a}
+.gatebg video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .8s}
+.gatebg video.on{opacity:1}
+.gatebg::after{content:""; position:absolute; inset:0; background:linear-gradient(90deg,rgba(2,3,8,.55),rgba(2,3,8,.3) 45%,rgba(2,3,8,.45)),linear-gradient(0deg,rgba(2,3,8,.55),transparent 45%)}
+.gate{position:relative; z-index:1; min-height:100vh; min-height:100dvh; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); grid-template-rows:auto 1fr; gap:0 48px; padding:44px clamp(24px,6vw,84px) 64px; color:#f4f6f8; font-family:var(--sans)}
+.gate-brand{grid-column:1/-1; font-size:15px; font-weight:600; letter-spacing:.42em; text-transform:uppercase; color:#fff}
+.gate-copy{align-self:end; max-width:560px; padding-bottom:28px}
+.gate-copy h1{font-family:var(--sans); font-weight:300; font-size:clamp(40px,5vw,66px); line-height:1.06; letter-spacing:-.015em; color:#fff; text-wrap:balance}
+.gate-copy p{margin-top:18px; font-size:16.5px; line-height:1.55; color:rgba(240,244,248,.82); max-width:46ch}
+.gate-card{align-self:center; justify-self:center; width:min(500px,100%); padding:34px 38px 30px; border-radius:16px;
+  background:rgba(6,8,14,.58); border:1px solid rgba(255,255,255,.09); box-shadow:0 30px 80px rgba(0,0,0,.5);
+  -webkit-backdrop-filter:blur(22px) saturate(120%); backdrop-filter:blur(22px) saturate(120%)}
+.gate .sub{font-size:17px; color:#fff; margin:0 0 20px}
+.gate form{display:flex; flex-direction:column; gap:18px}
+.gate label{gap:10px; font-size:16px; font-weight:400; letter-spacing:0; text-transform:none; color:#fff}
+.gate input[type=text],.gate input[type=email],.gate input[type=password]{height:52px; padding:0 14px; border-radius:7px; border:1px solid rgba(255,255,255,.6); background:rgba(0,0,0,.18); color:#fff; font-size:16px; caret-color:#fff}
+.gate input::placeholder{color:rgba(255,255,255,.4)}
+.gate input:focus-visible{outline:2px solid #fff; outline-offset:1px}
+.gate input:-webkit-autofill{-webkit-text-fill-color:#fff; -webkit-box-shadow:0 0 0 60px #0b0e16 inset; caret-color:#fff}
+.gate .btn{justify-content:center; height:56px; margin-top:2px; border:0; border-radius:11px; background:#f0fbfb; color:#0b0d12; font-size:17px; font-weight:400; letter-spacing:0; text-transform:none}
+.gate .btn:hover{background:#fff; transform:none; box-shadow:0 10px 30px rgba(255,255,255,.14)}
+.gate .err:not(:empty){display:flex; gap:9px; align-items:flex-start; padding:11px 13px; border-radius:8px; background:rgba(214,72,52,.2); border:1px solid rgba(255,140,120,.5); color:#ffc9bf; font-size:14px; font-weight:500; line-height:1.4; margin-top:0}
+.gate .err:not(:empty)::before{content:"!"; flex:none; width:18px; height:18px; border-radius:50%; background:#e2604c; color:#fff; font-size:12px; font-weight:700; display:grid; place-items:center; margin-top:1px}
+.gate .err.info:not(:empty){background:rgba(60,160,100,.2); border-color:rgba(130,220,160,.5); color:#c5f0d4}
+.gate .err.info:not(:empty)::before{content:"✓"; background:#3c9c63}
+.gate input.bad{border-color:#ff8f7d; box-shadow:0 0 0 3px rgba(226,96,76,.28)}
 .pw{position:relative; display:block}
-.pw input{padding-right:44px}
-.pw button{position:absolute; right:4px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:34px; height:34px; padding:0; border:0; border-radius:6px; background:none; color:var(--muted); cursor:pointer}
-.pw button:hover{color:var(--ink); background:var(--ground)}
-.pw button svg{width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.pw input{padding-right:52px !important}
+.pw button{position:absolute; right:8px; top:50%; transform:translateY(-50%); display:grid; place-items:center; width:38px; height:38px; padding:0; border:0; border-radius:7px; background:none; color:rgba(255,255,255,.75); cursor:pointer}
+.pw button:hover{color:#fff; background:rgba(255,255,255,.1)}
+.pw button svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
 .pw button .off{display:none}
 .pw button[aria-pressed="true"] .off{display:block}
-.gate .switch{text-align:center; font-size:13px; color:var(--muted); margin-top:14px}
-.gate .switch button{background:none; border:0; text-decoration:underline; cursor:pointer; padding:0; color:var(--ink)}
+.gate .switch{text-align:center; font-size:13px; color:rgba(240,244,248,.75); margin-top:16px}
+.gate .switch button{background:none; border:0; text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:0; color:#fff}
+.gate .fine{text-align:center; font-size:12px; color:rgba(240,244,248,.6); margin-top:10px}
+@media (max-width:860px){
+  .gate{grid-template-columns:1fr; grid-template-rows:auto auto auto; gap:26px; padding:28px 18px 40px; align-content:start}
+  .gate-copy{align-self:start; padding:8vh 0 0}
+  .gate-copy h1{font-size:38px}
+  .gate-copy p{font-size:15px}
+  .gate-card{padding:24px 20px 22px}
+}
+@media (prefers-reduced-motion:reduce){.gatebg video{display:none}}
 
 /* ---------- bank import ---------- */
 .cand{display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto; gap:12px 16px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line)}
@@ -209,10 +236,14 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 <body data-bg="fuji">
 
 <!-- ============ sign in ============ -->
+<div id="gatebg" class="gatebg" hidden><video id="gate-video" src="img/login.mp4" muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"></video></div>
 <div id="gate" class="gate" hidden>
-  <div class="glass">
-    <h1>Atlas</h1>
-    <p class="sub" data-en="Rent and cash flow for your properties">Rentas y flujo de tus propiedades</p>
+  <div class="gate-brand">Atlas</div>
+  <div class="gate-copy">
+    <h1 data-en="We carry the weight of your rentals.">Cargamos el peso de tus rentas.</h1>
+    <p data-en="See on one screen who has paid, who is late and how much you keep each month. Atlas detects payments from your bank, sends WhatsApp reminders and produces receipts and reports for you.">Ve en una sola pantalla quién ya pagó, quién va atrasado y cuánto te queda cada mes. Atlas detecta los pagos desde tu banco, envía recordatorios por WhatsApp y genera recibos y reportes por ti.</p>
+  </div>
+  <div class="gate-card">
     <form id="gate-form">
       <label><span data-en="Email">Correo</span> <input type="email" id="g-email" autocomplete="email" required></label>
       <label><span data-en="Password">Contraseña</span> <span class="pw"><input type="password" id="g-pass" autocomplete="current-password" minlength="6" required><button type="button" id="g-eye" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="off" d="M4 4l16 16"/></svg></button></span></label>
@@ -220,13 +251,18 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
       <div class="err" id="g-err"></div>
     </form>
     <p class="switch" id="g-switch">¿Primera vez? <button type="button" id="g-toggle">Crear cuenta</button></p>
+    <p class="fine" data-en="Your data is private: only you and the people you invite can see it.">Tus datos son privados: solo los ves tú y las personas que invites.</p>
   </div>
 </div>
 
 <!-- ============ first org ============ -->
 <div id="neworg" class="gate" hidden>
-  <div class="glass">
-    <h1>Atlas</h1>
+  <div class="gate-brand">Atlas</div>
+  <div class="gate-copy">
+    <h1 data-en="Welcome to Atlas.">Bienvenido a Atlas.</h1>
+    <p data-en="One last step: name your business so we can set up your board. You can change it later in Settings.">Un último paso: ponle nombre a tu negocio para preparar tu tablero. Puedes cambiarlo después en Ajustes.</p>
+  </div>
+  <div class="gate-card">
     <p class="sub" data-en="What is your business or portfolio called?">¿Cómo se llama tu negocio o portafolio?</p>
     <form id="neworg-form">
       <label><span data-en="Name">Nombre</span> <input type="text" id="o-name" placeholder="Inmuebles García" data-en-ph="García Properties" required></label>
@@ -452,7 +488,8 @@ $("#gate-form").onsubmit=async e=>{e.preventDefault(); gateErr(""); $("#g-go").d
 };
 $("#signout").onclick=async()=>{await sb.auth.signOut(); location.reload()};
 
-async function boot(){
+async function boot(){ try{ await boot0() } finally{ gateBg() } }
+async function boot0(){
   const {data:{session}}=await sb.auth.getSession();
   S.user=session?.user||null;
   $("#gate").hidden=!!S.user; if(!S.user) return;
@@ -841,7 +878,11 @@ $("#m-next").onclick=async()=>{S.period=nextPeriod(S.period,1); await loadAll();
 $("#add-prop").onclick=()=>propForm(); $("#add-unit").onclick=()=>unitForm();
 $("#add-pay").onclick=()=>payForm(); $("#add-exp").onclick=()=>expForm();
 document.addEventListener("keydown",e=>{if(e.key==="Escape") $("#modal").hidden=true});
-sb.auth.onAuthStateChange((ev)=>{ if(ev==="SIGNED_OUT"){$("#app").hidden=true; $("#gate").hidden=false} });
+sb.auth.onAuthStateChange((ev)=>{ if(ev==="SIGNED_OUT"){$("#app").hidden=true; $("#gate").hidden=false; gateBg()} });
+// the sign-in video only plays while a sign-in screen is showing; if the file is missing the dark backdrop stays
+function gateBg(){const on=!$("#gate").hidden||!$("#neworg").hidden, v=$("#gate-video"); $("#gatebg").hidden=!on;
+  if(on){const p=v.play(); if(p&&p.catch) p.catch(()=>{})} else v.pause()}
+$("#gate-video").addEventListener("playing",e=>e.target.classList.add("on"));
 
 // ---------- language switch ----------
 function applyLang(){
