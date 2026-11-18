@@ -129,6 +129,15 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 .toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%); z-index:50; padding:11px 18px; border-radius:8px; background:#1d1b18; color:#f6f2ea; font-size:13px; box-shadow:var(--shadow-up); opacity:0; transition:opacity .2s; pointer-events:none}
 .toast.on{opacity:1}
 
+/* ---------- language switch ---------- */
+.lang{display:inline-flex; gap:2px; padding:3px; border-radius:9px; background:rgba(250,250,248,.8); border:1px solid rgba(255,255,255,.7); -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px); box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.lang button{background:none; border:0; border-radius:6px; padding:6px 12px; font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; color:var(--muted); transition:background .15s,color .15s}
+.lang button:hover{background:var(--ground)}
+.lang button[aria-pressed="true"]{background:#1d1b18; color:#f6f2ea}
+.headr{display:flex; flex-direction:column; align-items:flex-end; gap:10px}
+.gate{position:relative}
+.gate > .lang{position:absolute; top:18px; right:18px}
+
 /* ---------- modal ---------- */
 .modal{position:fixed; inset:0; z-index:30; display:flex; align-items:flex-start; justify-content:center; padding:6vh 16px; background:rgba(20,16,8,.4); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); overflow:auto}
 .modal .glass{width:min(640px,100%); background:linear-gradient(170deg,rgba(250,250,248,.97),rgba(240,240,236,.95))}
@@ -179,6 +188,7 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
   .side nav button{padding:8px 10px; font-size:10.5px; letter-spacing:.14em}
   .side .motto{display:none}
   .head h1{font-size:46px}
+  .headr{align-items:flex-start; width:100%}
   .grid.kpi{grid-template-columns:1fr 1fr; gap:10px}
   .kpi .glass{padding:14px 16px 12px}
   .kpi .v{font-size:26px}
@@ -190,12 +200,13 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 
 <!-- ============ sign in ============ -->
 <div id="gate" class="gate" hidden>
+  <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es">Español</button><button type="button" data-lang="en">English</button></div>
   <div class="glass">
     <h1>Atlas</h1>
-    <p class="sub">Rentas y flujo de tus propiedades</p>
+    <p class="sub" data-en="Rent and cash flow for your properties">Rentas y flujo de tus propiedades</p>
     <form id="gate-form">
-      <label>Correo <input type="email" id="g-email" autocomplete="email" required></label>
-      <label>Contraseña <input type="password" id="g-pass" autocomplete="current-password" minlength="6" required></label>
+      <label><span data-en="Email">Correo</span> <input type="email" id="g-email" autocomplete="email" required></label>
+      <label><span data-en="Password">Contraseña</span> <input type="password" id="g-pass" autocomplete="current-password" minlength="6" required></label>
       <button class="btn" id="g-go" type="submit">Entrar</button>
       <div class="err" id="g-err"></div>
     </form>
@@ -205,12 +216,13 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 
 <!-- ============ first org ============ -->
 <div id="neworg" class="gate" hidden>
+  <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es">Español</button><button type="button" data-lang="en">English</button></div>
   <div class="glass">
     <h1>Atlas</h1>
-    <p class="sub">¿Cómo se llama tu negocio o portafolio?</p>
+    <p class="sub" data-en="What is your business or portfolio called?">¿Cómo se llama tu negocio o portafolio?</p>
     <form id="neworg-form">
-      <label>Nombre <input type="text" id="o-name" placeholder="Inmuebles García" required></label>
-      <button class="btn" type="submit">Empezar</button>
+      <label><span data-en="Name">Nombre</span> <input type="text" id="o-name" placeholder="Inmuebles García" data-en-ph="García Properties" required></label>
+      <button class="btn" type="submit" data-en="Get started">Empezar</button>
       <div class="err" id="o-err"></div>
     </form>
   </div>
@@ -222,14 +234,14 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
     <h2>Atlas</h2>
     <div class="org" id="side-org"></div>
     <nav id="nav">
-      <button data-v="resumen" aria-pressed="true">Resumen</button>
-      <button data-v="unidades">Unidades <span class="n" id="n-units"></span></button>
-      <button data-v="pagos">Pagos <span class="n" id="n-pay"></span></button>
-      <button data-v="banco">Banco</button>
-      <button data-v="gastos">Gastos <span class="n" id="n-exp"></span></button>
-      <button data-v="ajustes">Ajustes</button>
+      <button data-v="resumen" aria-pressed="true"><span data-en="Summary">Resumen</span></button>
+      <button data-v="unidades"><span data-en="Units">Unidades</span> <span class="n" id="n-units"></span></button>
+      <button data-v="pagos"><span data-en="Payments">Pagos</span> <span class="n" id="n-pay"></span></button>
+      <button data-v="banco"><span data-en="Bank">Banco</span></button>
+      <button data-v="gastos"><span data-en="Expenses">Gastos</span> <span class="n" id="n-exp"></span></button>
+      <button data-v="ajustes"><span data-en="Settings">Ajustes</span></button>
     </nav>
-    <div class="motto">Lo que no se mide, no se cobra.</div>
+    <div class="motto" data-en="What isn't measured doesn't get collected.">Lo que no se mide, no se cobra.</div>
   </aside>
 
   <main class="main">
@@ -238,10 +250,13 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
         <h1 id="title">Resumen</h1>
         <div class="tag"><i></i><span id="tagline">Este mes, de un vistazo</span></div>
       </div>
-      <div class="month">
-        <button id="m-prev" title="Mes anterior">‹</button>
-        <b id="m-label"></b>
-        <button id="m-next" title="Mes siguiente">›</button>
+      <div class="headr">
+        <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es">Español</button><button type="button" data-lang="en">English</button></div>
+        <div class="month">
+          <button id="m-prev" title="Mes anterior" data-en-title="Previous month">‹</button>
+          <b id="m-label"></b>
+          <button id="m-next" title="Mes siguiente" data-en-title="Next month">›</button>
+        </div>
       </div>
     </div>
 
@@ -249,20 +264,20 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
     <section data-view="resumen">
       <div class="bar" style="margin-bottom:14px">
         <span class="hint" id="res-hint"></span>
-        <button class="btn ghost" id="report">Reporte del mes</button>
+        <button class="btn ghost" id="report" data-en="Monthly report">Reporte del mes</button>
       </div>
       <div class="grid kpi" id="kpis"></div>
       <div class="two" style="margin-top:16px">
         <div class="glass">
-          <header><h2>Pendientes de cobro</h2><span class="right" id="pend-right"></span></header>
+          <header><h2 data-en="Awaiting payment">Pendientes de cobro</h2><span class="right" id="pend-right"></span></header>
           <div class="gbody" id="pend"></div>
         </div>
         <div class="glass">
-          <header><h2>Movimientos del mes</h2><span class="right" id="mov-right"></span></header>
+          <header><h2 data-en="This month's activity">Movimientos del mes</h2><span class="right" id="mov-right"></span></header>
           <div class="gbody" id="mov"></div>
         </div>
         <div class="glass" id="contracts-card">
-          <header><h2>Contratos por vencer</h2><span class="right">próximos 90 días</span></header>
+          <header><h2 data-en="Contracts ending soon">Contratos por vencer</h2><span class="right" data-en="next 90 days">próximos 90 días</span></header>
           <div class="gbody" id="contracts"></div>
         </div>
       </div>
@@ -271,8 +286,8 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
     <!-- unidades -->
     <section data-view="unidades" hidden>
       <div class="bar">
-        <span class="hint">Propiedades y sus unidades. El estado es del mes seleccionado. Clic en una unidad para ver su historial.</span>
-        <span style="display:flex;gap:8px"><button class="btn ghost" id="add-prop">+ Propiedad</button><button class="btn" id="add-unit">+ Unidad</button></span>
+        <span class="hint" data-en="Properties and their units. Status is for the selected month. Click a unit to see its history.">Propiedades y sus unidades. El estado es del mes seleccionado. Clic en una unidad para ver su historial.</span>
+        <span style="display:flex;gap:8px"><button class="btn ghost" id="add-prop" data-en="+ Property">+ Propiedad</button><button class="btn" id="add-unit" data-en="+ Unit">+ Unidad</button></span>
       </div>
       <div id="units" style="margin-top:14px;display:flex;flex-direction:column;gap:16px"></div>
     </section>
@@ -280,8 +295,8 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
     <!-- pagos -->
     <section data-view="pagos" hidden>
       <div class="bar">
-        <span class="hint">Cobros registrados para el mes seleccionado. "Recibo" imprime o guarda un PDF.</span>
-        <button class="btn" id="add-pay">+ Registrar pago</button>
+        <span class="hint" data-en="Payments recorded for the selected month. &quot;Receipt&quot; prints or saves a PDF.">Cobros registrados para el mes seleccionado. "Recibo" imprime o guarda un PDF.</span>
+        <button class="btn" id="add-pay" data-en="+ Record payment">+ Registrar pago</button>
       </div>
       <div class="glass" style="margin-top:14px"><div class="gbody" id="pays" style="padding-top:14px"></div></div>
     </section>
@@ -290,19 +305,19 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
     <section data-view="banco" hidden>
       <div class="two">
         <div class="glass">
-          <header><h2>Detectar pagos</h2><span class="right">alertas o estado de cuenta</span></header>
+          <header><h2 data-en="Detect payments">Detectar pagos</h2><span class="right" data-en="alerts or bank statement">alertas o estado de cuenta</span></header>
           <div class="gbody">
-            <p class="none" style="padding-top:4px">Pega aquí las alertas del banco (SMS o correo: "Recibiste una transferencia por $14,500.00 de…") o sube el estado de cuenta en CSV. Atlas busca el monto, la fecha y el nombre, y propone a qué unidad corresponde cada abono. Tú confirmas.</p>
+            <p class="none" style="padding-top:4px" data-en="Paste your bank alerts here (SMS or email: &quot;Recibiste una transferencia por $14,500.00 de…&quot;) or upload the bank statement as a CSV. Atlas looks for the amount, the date and the name, and suggests which unit each deposit belongs to. You confirm.">Pega aquí las alertas del banco (SMS o correo: "Recibiste una transferencia por $14,500.00 de…") o sube el estado de cuenta en CSV. Atlas busca el monto, la fecha y el nombre, y propone a qué unidad corresponde cada abono. Tú confirmas.</p>
             <textarea id="bank-text" rows="7" placeholder="BBVA: Recibiste una transferencia SPEI por $14,500.00 de LAURA MARTINEZ el 03/11/2026. Concepto: RENTA 1A …"></textarea>
             <div class="actions" style="justify-content:space-between">
-              <label class="btn ghost" style="cursor:pointer">CSV del banco <input type="file" id="bank-csv" accept=".csv,.txt" hidden></label>
-              <button class="btn" id="bank-scan">Buscar pagos</button>
+              <label class="btn ghost" style="cursor:pointer"><span data-en="Bank CSV">CSV del banco</span> <input type="file" id="bank-csv" accept=".csv,.txt" hidden></label>
+              <button class="btn" id="bank-scan" data-en="Find payments">Buscar pagos</button>
             </div>
-            <p class="none" style="font-size:12.5px">Para que acierte más, en cada unidad llena "Palabras del banco" con el nombre que aparece en la transferencia o la referencia que le pides al inquilino.</p>
+            <p class="none" style="font-size:12.5px" data-en="For better matches, fill in &quot;Bank keywords&quot; on each unit with the name that appears on the transfer or the reference you ask the tenant to use.">Para que acierte más, en cada unidad llena "Palabras del banco" con el nombre que aparece en la transferencia o la referencia que le pides al inquilino.</p>
           </div>
         </div>
         <div class="glass">
-          <header><h2>Abonos encontrados</h2><span class="right" id="cand-right"></span></header>
+          <header><h2 data-en="Deposits found">Abonos encontrados</h2><span class="right" id="cand-right"></span></header>
           <div class="gbody" id="cands"><p class="none">Nada todavía.</p></div>
         </div>
       </div>
@@ -311,8 +326,8 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
     <!-- gastos -->
     <section data-view="gastos" hidden>
       <div class="bar">
-        <span class="hint">Mantenimiento, servicios, predial y demás, del mes seleccionado.</span>
-        <button class="btn" id="add-exp">+ Registrar gasto</button>
+        <span class="hint" data-en="Maintenance, utilities, property tax and more, for the selected month.">Mantenimiento, servicios, predial y demás, del mes seleccionado.</span>
+        <button class="btn" id="add-exp" data-en="+ Record expense">+ Registrar gasto</button>
       </div>
       <div class="glass" style="margin-top:14px"><div class="gbody" id="exps" style="padding-top:14px"></div></div>
     </section>
@@ -321,31 +336,31 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
     <section data-view="ajustes" hidden>
       <div class="two">
         <div class="glass">
-          <header><h2>Negocio</h2></header>
+          <header><h2 data-en="Business">Negocio</h2></header>
           <div class="gbody">
             <form id="org-form" class="form">
-              <label class="wide">Nombre <input type="text" id="s-name" required></label>
-              <label>Moneda <select id="s-cur"><option>MXN</option><option>USD</option></select></label>
-              <div class="actions wide"><button class="btn" type="submit">Guardar</button></div>
+              <label class="wide"><span data-en="Name">Nombre</span> <input type="text" id="s-name" required></label>
+              <label><span data-en="Currency">Moneda</span> <select id="s-cur"><option>MXN</option><option>USD</option></select></label>
+              <div class="actions wide"><button class="btn" type="submit" data-en="Save">Guardar</button></div>
             </form>
           </div>
         </div>
         <div class="glass">
-          <header><h2>Equipo</h2><span class="right">contador, socio, administrador</span></header>
+          <header><h2 data-en="Team">Equipo</h2><span class="right" data-en="accountant, partner, manager">contador, socio, administrador</span></header>
           <div class="gbody">
             <div id="members" style="font-size:14px;margin-bottom:12px"></div>
             <form id="inv-form" class="form">
-              <label class="wide">Correo de la persona <small>(debe crear su cuenta en Atlas primero)</small><input type="email" id="inv-email" required></label>
-              <div class="actions wide"><button class="btn ghost" type="submit">Invitar</button></div>
+              <label class="wide"><span data-en="Person's email">Correo de la persona</span> <small data-en="(they must create their Atlas account first)">(debe crear su cuenta en Atlas primero)</small><input type="email" id="inv-email" required></label>
+              <div class="actions wide"><button class="btn ghost" type="submit" data-en="Invite">Invitar</button></div>
               <div class="err wide" id="inv-err"></div>
             </form>
           </div>
         </div>
         <div class="glass">
-          <header><h2>Cuenta</h2></header>
+          <header><h2 data-en="Account">Cuenta</h2></header>
           <div class="gbody">
             <p style="font-size:14px;margin-bottom:12px" id="me"></p>
-            <button class="btn ghost" id="signout">Cerrar sesión</button>
+            <button class="btn ghost" id="signout" data-en="Sign out">Cerrar sesión</button>
           </div>
         </div>
       </div>
@@ -368,6 +383,10 @@ label small{font-weight:400; letter-spacing:0; text-transform:none; font-size:11
 const CFG={url:"https://vujplbatlbogrogwmnzk.supabase.co", key:"sb_publishable_15J4arZjH7YU-rSEuENwkA_J0NhZK99"};
 const sb=window.supabase.createClient(CFG.url,CFG.key);
 
+// ---------- language (Spanish by default; the choice is remembered on this device) ----------
+let LANG="es"; try{LANG=localStorage.getItem("atlas.lang")==="en"?"en":"es"}catch(e){}
+const t=(es,en)=>LANG==="en"?en:es;
+
 // ---------- state ----------
 const S={user:null, org:null, orgs:[], props:[], units:[], pays:[], exps:[], members:[], cands:[],
   period:new Date().toISOString().slice(0,7), view:"resumen"};
@@ -376,26 +395,33 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=n=>new Intl.NumberFormat("es-MX",{style:"currency",currency:S.org?.currency||"MXN",maximumFractionDigits:0}).format(+n||0);
 const money2=n=>new Intl.NumberFormat("es-MX",{style:"currency",currency:S.org?.currency||"MXN"}).format(+n||0);
-const MONTHS=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-const plabel=p=>{const [y,m]=p.split("-"); return MONTHS[+m-1]+" "+y};
+const MES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const MEN=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const mname=i=>(LANG==="en"?MEN:MES)[i];
+const plabel=p=>{const [y,m]=p.split("-"); return mname(+m-1)+" "+y};
 const today=()=>new Date().toISOString().slice(0,10);
-const fdate=d=>{if(!d) return "—"; const [y,m,dd]=d.split("-"); return `${+dd} ${MONTHS[+m-1].slice(0,3)}`};
-const fdateL=d=>{if(!d) return "—"; const [y,m,dd]=d.split("-"); return `${+dd} de ${MONTHS[+m-1]} de ${y}`};
+const fdate=d=>{if(!d) return "—"; const [y,m,dd]=d.split("-"); const mo=mname(+m-1).slice(0,3); return LANG==="en"?`${mo} ${+dd}`:`${+dd} ${mo}`};
+const fdateL=d=>{if(!d) return "—"; const [y,m,dd]=d.split("-"); return LANG==="en"?`${MEN[+m-1]} ${+dd}, ${y}`:`${+dd} de ${MES[+m-1]} de ${y}`};
 const daysUntil=d=>Math.round((new Date(d+"T00:00")-new Date(today()+"T00:00"))/864e5);
 function toast(t){const e=$("#toast"); e.textContent=t; e.classList.add("on"); clearTimeout(toast.t); toast.t=setTimeout(()=>e.classList.remove("on"),2400)}
-const CAT={maintenance:"Mantenimiento",utilities:"Servicios",taxes:"Predial / impuestos",admin:"Administración",insurance:"Seguro",other:"Otro"};
-const METHOD={transfer:"Transferencia",cash:"Efectivo",card:"Tarjeta",other:"Otro"};
+const CAT_ES={maintenance:"Mantenimiento",utilities:"Servicios",taxes:"Predial / impuestos",admin:"Administración",insurance:"Seguro",other:"Otro"};
+const CAT_EN={maintenance:"Maintenance",utilities:"Utilities",taxes:"Property tax / taxes",admin:"Administration",insurance:"Insurance",other:"Other"};
+const METHOD_ES={transfer:"Transferencia",cash:"Efectivo",card:"Tarjeta",other:"Otro"};
+const METHOD_EN={transfer:"Transfer",cash:"Cash",card:"Card",other:"Other"};
+const CAT=()=>LANG==="en"?CAT_EN:CAT_ES, METHOD=()=>LANG==="en"?METHOD_EN:METHOD_ES;
+const WHY=()=>LANG==="en"?{kw:"keyword",name:"name",amt:"amount = rent",unit:"unit",tie:"tie"}:{kw:"palabra clave",name:"nombre",amt:"monto = renta",unit:"unidad",tie:"empate"};
 
 // ---------- auth ----------
 let signup=false;
-$("#g-toggle").onclick=()=>{signup=!signup; $("#g-go").textContent=signup?"Crear cuenta":"Entrar";
-  $("#g-switch").firstChild.textContent=signup?"¿Ya tienes cuenta? ":"¿Primera vez? "; $("#g-toggle").textContent=signup?"Entrar":"Crear cuenta"; $("#g-err").textContent=""};
+function gateText(){$("#g-go").textContent=signup?t("Crear cuenta","Create account"):t("Entrar","Sign in");
+  $("#g-switch").firstChild.textContent=signup?t("¿Ya tienes cuenta? ","Already have an account? "):t("¿Primera vez? ","First time? "); $("#g-toggle").textContent=signup?t("Entrar","Sign in"):t("Crear cuenta","Create account")}
+$("#g-toggle").onclick=()=>{signup=!signup; gateText(); $("#g-err").textContent=""};
 $("#gate-form").onsubmit=async e=>{e.preventDefault(); $("#g-err").textContent=""; $("#g-go").disabled=true;
   const email=$("#g-email").value.trim(), password=$("#g-pass").value;
   const r=signup? await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}}) : await sb.auth.signInWithPassword({email,password});
   $("#g-go").disabled=false;
   if(r.error){$("#g-err").textContent=r.error.message; return}
-  if(signup && !r.data.session){$("#g-err").textContent="Revisa tu correo para confirmar la cuenta y luego entra."; return}
+  if(signup && !r.data.session){$("#g-err").textContent=t("Revisa tu correo para confirmar la cuenta y luego entra.","Check your email to confirm your account, then sign in."); return}
   boot();
 };
 $("#signout").onclick=async()=>{await sb.auth.signOut(); location.reload()};
@@ -435,19 +461,19 @@ async function loadAll(){
 function nextPeriod(p,d=1){let [y,m]=p.split("-").map(Number); m+=d; while(m>12){m-=12;y++} while(m<1){m+=12;y--} return `${y}-${String(m).padStart(2,"0")}`}
 
 function unitStatus(u){
-  if(u.status==="vacant") return {k:"vacant",t:"Vacía",paid:0};
+  if(u.status==="vacant") return {k:"vacant",t:t("Vacía","Vacant"),paid:0};
   const paid=S.pays.filter(p=>p.unit_id===u.id).reduce((a,p)=>a+ +p.amount,0);
-  if(paid>=+u.rent-0.005) return {k:"paid",t:"Pagado",paid};
-  if(paid>0) return {k:"partial",t:"Parcial",paid};
+  if(paid>=+u.rent-0.005) return {k:"paid",t:t("Pagado","Paid"),paid};
+  if(paid>0) return {k:"partial",t:t("Parcial","Partial"),paid};
   const due=new Date(+S.period.slice(0,4), +S.period.slice(5,7)-1, Math.min(u.due_day,28));
   const late=new Date(today())>due;
-  return late? {k:"late",t:"Atrasado",paid} : {k:"due",t:"Por cobrar",paid};
+  return late? {k:"late",t:t("Atrasado","Late"),paid} : {k:"due",t:t("Por cobrar","Due"),paid};
 }
 function contractChip(u){
   if(!u.contract_end) return "";
   const d=daysUntil(u.contract_end);
-  if(d<0) return `<span class="chip over">Contrato vencido</span>`;
-  if(d<=90) return `<span class="chip soon">Vence en ${d} d</span>`;
+  if(d<0) return `<span class="chip over">${t("Contrato vencido","Contract expired")}</span>`;
+  if(d<=90) return `<span class="chip soon">${t(`Vence en ${d} d`,`Ends in ${d} d`)}</span>`;
   return "";
 }
 const propName=id=>S.props.find(p=>p.id===id)?.name||"—";
@@ -455,7 +481,8 @@ const unitName=id=>{const u=S.units.find(x=>x.id===id); return u? `${propName(u.
 const waLink=(u,amount)=>{
   const ph=(u.tenant_phone||"").replace(/\D/g,""); if(!ph) return "";
   const n=ph.length===10? "52"+ph : ph;
-  const msg=`Hola ${u.tenant_name||""}, te recuerdo que la renta de ${u.name} de ${plabel(S.period)} (${money(amount)}) vence el día ${u.due_day}. ¿Me confirmas cuando la transfieras? Gracias.`;
+  const msg=t(`Hola ${u.tenant_name||""}, te recuerdo que la renta de ${u.name} de ${plabel(S.period)} (${money(amount)}) vence el día ${u.due_day}. ¿Me confirmas cuando la transfieras? Gracias.`,
+    `Hi ${u.tenant_name||""}, a reminder that the rent for ${u.name} for ${plabel(S.period)} (${money(amount)}) is due on day ${u.due_day}. Could you confirm once you've transferred it? Thank you.`);
   return `https://wa.me/${n}?text=${encodeURIComponent(msg)}`;
 };
 
@@ -467,7 +494,9 @@ function render(){
   $("#n-units").textContent=S.units.length||""; $("#n-pay").textContent=S.pays.length||""; $("#n-exp").textContent=S.exps.length||"";
   document.querySelectorAll("#nav button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===S.view));
   document.querySelectorAll("[data-view]").forEach(s=>s.hidden=s.dataset.view!==S.view);
-  const T={resumen:["Resumen","Este mes, de un vistazo"],unidades:["Unidades","Propiedades, inquilinos y rentas"],pagos:["Pagos","Lo que ya entró"],banco:["Banco","Detectar pagos desde el banco"],gastos:["Gastos","Lo que salió"],ajustes:["Ajustes","Negocio, equipo y cuenta"]}[S.view];
+  const T=(LANG==="en"
+    ?{resumen:["Summary","This month at a glance"],unidades:["Units","Properties, tenants and rents"],pagos:["Payments","What has come in"],banco:["Bank","Detect payments from the bank"],gastos:["Expenses","What went out"],ajustes:["Settings","Business, team and account"]}
+    :{resumen:["Resumen","Este mes, de un vistazo"],unidades:["Unidades","Propiedades, inquilinos y rentas"],pagos:["Pagos","Lo que ya entró"],banco:["Banco","Detectar pagos desde el banco"],gastos:["Gastos","Lo que salió"],ajustes:["Ajustes","Negocio, equipo y cuenta"]})[S.view];
   $("#title").textContent=T[0]; $("#tagline").textContent=T[1];
   ({resumen:rResumen,unidades:rUnidades,pagos:rPagos,banco:rBanco,gastos:rGastos,ajustes:rAjustes})[S.view]();
 }
@@ -481,30 +510,31 @@ function rResumen(){
   const sts=occ.map(u=>({u,s:unitStatus(u)}));
   const late=sts.filter(x=>x.s.k==="late").length;
   const net=collected-spent;
-  $("#res-hint").textContent=`${S.props.length} propiedad${S.props.length===1?"":"es"} · ${S.units.length} unidad${S.units.length===1?"":"es"}`;
+  $("#res-hint").textContent=t(`${S.props.length} propiedad${S.props.length===1?"":"es"} · ${S.units.length} unidad${S.units.length===1?"":"es"}`,
+    `${S.props.length} propert${S.props.length===1?"y":"ies"} · ${S.units.length} unit${S.units.length===1?"":"s"}`);
   $("#kpis").innerHTML=[
-    ["Renta esperada",money(expected),`${occ.length} unidad${occ.length===1?"":"es"} ocupada${occ.length===1?"":"s"}`,""],
-    ["Cobrado",money(collected),expected?Math.round(collected/expected*100)+"% del esperado":"—","ok"],
-    ["Pendiente",money(pending),late?`${late} atrasada${late===1?"":"s"}`:"nada atrasado",pending?(late?"crit":"warn"):""],
-    ["Gastos",money(spent),`${S.exps.length} movimiento${S.exps.length===1?"":"s"}`,""],
-    ["Flujo neto",money(net),"cobrado − gastos",net<0?"crit":"ok"],
+    [t("Renta esperada","Expected rent"),money(expected),t(`${occ.length} unidad${occ.length===1?"":"es"} ocupada${occ.length===1?"":"s"}`,`${occ.length} occupied unit${occ.length===1?"":"s"}`),""],
+    [t("Cobrado","Collected"),money(collected),expected?Math.round(collected/expected*100)+t("% del esperado","% of expected"):"—","ok"],
+    [t("Pendiente","Outstanding"),money(pending),late?t(`${late} atrasada${late===1?"":"s"}`,`${late} late`):t("nada atrasado","nothing late"),pending?(late?"crit":"warn"):""],
+    [t("Gastos","Expenses"),money(spent),t(`${S.exps.length} movimiento${S.exps.length===1?"":"s"}`,`${S.exps.length} entr${S.exps.length===1?"y":"ies"}`),""],
+    [t("Flujo neto","Net cash flow"),money(net),t("cobrado − gastos","collected − expenses"),net<0?"crit":"ok"],
   ].map(([k,v,s,c])=>`<div class="glass"><div class="k">${k}</div><div class="v ${c}">${v}</div><div class="s">${s}</div></div>`).join("");
 
   const pend=sts.filter(x=>x.s.k!=="paid").sort((a,b)=>(b.s.k==="late")-(a.s.k==="late"));
-  $("#pend-right").textContent=pend.length?`${pend.length} por cobrar`:"";
-  $("#pend").innerHTML=pend.length? `<table><tr><th>Unidad</th><th>Inquilino</th><th class="num">Falta</th><th></th></tr>`+pend.map(({u,s})=>{const wa=waLink(u,+u.rent-s.paid); return `
+  $("#pend-right").textContent=pend.length?t(`${pend.length} por cobrar`,`${pend.length} to collect`):"";
+  $("#pend").innerHTML=pend.length? `<table><tr><th>${t("Unidad","Unit")}</th><th>${t("Inquilino","Tenant")}</th><th class="num">${t("Falta","Owed")}</th><th></th></tr>`+pend.map(({u,s})=>{const wa=waLink(u,+u.rent-s.paid); return `
     <tr><td><button class="link" data-hist="${u.id}">${esc(u.name)}</button><span class="sub">${esc(propName(u.property_id))}</span></td>
-    <td>${esc(u.tenant_name)||"—"}<span class="sub"><span class="chip ${s.k}">${s.t}</span> · vence el ${u.due_day}</span></td>
+    <td>${esc(u.tenant_name)||"—"}<span class="sub"><span class="chip ${s.k}">${s.t}</span> · ${t("vence el","due on day")} ${u.due_day}</span></td>
     <td class="num">${money(+u.rent-s.paid)}</td>
-    <td class="num" style="white-space:nowrap">${wa?`<a class="btn sm wa" href="${wa}" target="_blank" rel="noopener" title="Recordatorio por WhatsApp">WA</a> `:""}<button class="btn sm" data-paid="${u.id}">Cobrado</button></td></tr>`}).join("")+`</table>`
-    : (occ.length? `<p class="none">Todo cobrado este mes.</p>` : `<p class="none">Aún no hay unidades. Empieza en <b>Unidades</b>.</p>`);
+    <td class="num" style="white-space:nowrap">${wa?`<a class="btn sm wa" href="${wa}" target="_blank" rel="noopener" title="${t("Recordatorio por WhatsApp","WhatsApp reminder")}">WA</a> `:""}<button class="btn sm" data-paid="${u.id}">${t("Cobrado","Paid")}</button></td></tr>`}).join("")+`</table>`
+    : (occ.length? `<p class="none">${t("Todo cobrado este mes.","Everything is collected this month.")}</p>` : `<p class="none">${t("Aún no hay unidades. Empieza en <b>Unidades</b>.","No units yet. Start in <b>Units</b>.")}</p>`);
   document.querySelectorAll("[data-paid]").forEach(b=>b.onclick=()=>quickPay(b.dataset.paid));
 
-  const mov=[...S.pays.map(p=>({d:p.paid_on,t:"in",a:+p.amount,l:unitName(p.unit_id),s:METHOD[p.method]+(p.source==="bank"?" · banco":"")})),
-             ...S.exps.map(e=>({d:e.date,t:"out",a:+e.amount,l:e.note||CAT[e.category],s:e.property_id?propName(e.property_id):"general"}))]
+  const mov=[...S.pays.map(p=>({d:p.paid_on,t:"in",a:+p.amount,l:unitName(p.unit_id),s:METHOD()[p.method]+(p.source==="bank"?t(" · banco"," · bank"):"")})),
+             ...S.exps.map(e=>({d:e.date,t:"out",a:+e.amount,l:e.note||CAT()[e.category],s:e.property_id?propName(e.property_id):"general"}))]
     .sort((a,b)=>b.d.localeCompare(a.d)).slice(0,12);
-  $("#mov-right").textContent=mov.length?`últimos ${mov.length}`:"";
-  $("#mov").innerHTML=mov.length?`<table>`+mov.map(m=>`<tr><td class="mono" style="color:var(--muted);width:60px">${fdate(m.d)}</td><td>${esc(m.l)}<span class="sub">${esc(m.s)}</span></td><td class="num" style="color:${m.t==="in"?"var(--ok)":"var(--crit)"}">${m.t==="in"?"+":"−"}${money(m.a)}</td></tr>`).join("")+`</table>`:`<p class="none">Sin movimientos en ${plabel(S.period)}.</p>`;
+  $("#mov-right").textContent=mov.length?t(`últimos ${mov.length}`,`last ${mov.length}`):"";
+  $("#mov").innerHTML=mov.length?`<table>`+mov.map(m=>`<tr><td class="mono" style="color:var(--muted);width:60px">${fdate(m.d)}</td><td>${esc(m.l)}<span class="sub">${esc(m.s)}</span></td><td class="num" style="color:${m.t==="in"?"var(--ok)":"var(--crit)"}">${m.t==="in"?"+":"−"}${money(m.a)}</td></tr>`).join("")+`</table>`:`<p class="none">${t("Sin movimientos en","No activity in")} ${plabel(S.period)}.</p>`;
 
   const ctr=S.units.filter(u=>u.contract_end && daysUntil(u.contract_end)<=90).sort((a,b)=>a.contract_end.localeCompare(b.contract_end));
   $("#contracts-card").hidden=!ctr.length;
@@ -514,18 +544,18 @@ function rResumen(){
 
 function rUnidades(){
   const box=$("#units");
-  if(!S.props.length){box.innerHTML=`<div class="glass"><div class="gbody"><p class="none" style="padding-top:14px">Agrega tu primera propiedad (un edificio, una casa, un local) y luego sus unidades.</p></div></div>`; return}
+  if(!S.props.length){box.innerHTML=`<div class="glass"><div class="gbody"><p class="none" style="padding-top:14px">${t("Agrega tu primera propiedad (un edificio, una casa, un local) y luego sus unidades.","Add your first property (a building, a house, a commercial space) and then its units.")}</p></div></div>`; return}
   box.innerHTML=S.props.map(p=>{
     const us=S.units.filter(u=>u.property_id===p.id);
     const rent=us.filter(u=>u.status!=="vacant").reduce((a,u)=>a+ +u.rent,0);
-    return `<div class="glass"><header><h2 style="text-transform:none;letter-spacing:0;font-size:22px">${esc(p.name)}</h2><span class="right">${esc(p.address)}${p.address?" · ":""}${us.length} unidad${us.length===1?"":"es"} · ${money(rent)}/mes <button class="btn danger" data-eprop="${p.id}" title="Editar">✎</button></span></header>
-    <div class="gbody">${us.length?`<table><tr><th>Unidad</th><th>Inquilino</th><th class="num">Renta</th><th>Vence</th><th>Estado</th><th>Contrato</th><th></th></tr>`+us.map(u=>{const s=unitStatus(u); return `<tr>
+    return `<div class="glass"><header><h2 style="text-transform:none;letter-spacing:0;font-size:22px">${esc(p.name)}</h2><span class="right">${esc(p.address)}${p.address?" · ":""}${us.length} ${t("unidad"+(us.length===1?"":"es"),"unit"+(us.length===1?"":"s"))} · ${money(rent)}${t("/mes","/mo")} <button class="btn danger" data-eprop="${p.id}" title="${t("Editar","Edit")}">✎</button></span></header>
+    <div class="gbody">${us.length?`<table><tr><th>${t("Unidad","Unit")}</th><th>${t("Inquilino","Tenant")}</th><th class="num">${t("Renta","Rent")}</th><th>${t("Vence","Due")}</th><th>${t("Estado","Status")}</th><th>${t("Contrato","Contract")}</th><th></th></tr>`+us.map(u=>{const s=unitStatus(u); return `<tr>
       <td><button class="link" data-hist="${u.id}">${esc(u.name)}</button>${u.notes?`<span class="sub">${esc(u.notes)}</span>`:""}</td>
       <td>${esc(u.tenant_name)||"—"}${u.tenant_phone?`<span class="sub">${esc(u.tenant_phone)}</span>`:""}</td>
-      <td class="num">${money(u.rent)}</td><td>día ${u.due_day}</td>
-      <td><span class="chip ${s.k}">${s.t}</span>${s.k==="partial"?`<span class="sub">${money(s.paid)} de ${money(u.rent)}</span>`:""}</td>
+      <td class="num">${money(u.rent)}</td><td>${t("día","day")} ${u.due_day}</td>
+      <td><span class="chip ${s.k}">${s.t}</span>${s.k==="partial"?`<span class="sub">${money(s.paid)} ${t("de","of")} ${money(u.rent)}</span>`:""}</td>
       <td>${u.contract_end?`${fdate(u.contract_end)} ${u.contract_end.slice(0,4)}<span class="sub">${contractChip(u)}</span>`:"—"}</td>
-      <td class="num"><button class="btn danger" data-eunit="${u.id}" title="Editar">✎</button></td></tr>`}).join("")+`</table>`:`<p class="none">Sin unidades todavía.</p>`}</div></div>`;
+      <td class="num"><button class="btn danger" data-eunit="${u.id}" title="${t("Editar","Edit")}">✎</button></td></tr>`}).join("")+`</table>`:`<p class="none">${t("Sin unidades todavía.","No units yet.")}</p>`}</div></div>`;
   }).join("");
   document.querySelectorAll("[data-eprop]").forEach(b=>b.onclick=()=>propForm(S.props.find(p=>p.id===b.dataset.eprop)));
   document.querySelectorAll("[data-eunit]").forEach(b=>b.onclick=()=>unitForm(S.units.find(u=>u.id===b.dataset.eunit)));
@@ -533,38 +563,39 @@ function rUnidades(){
 }
 
 function rPagos(){
-  $("#pays").innerHTML=S.pays.length?`<table><tr><th>Fecha</th><th>Unidad</th><th>Forma</th><th>Nota</th><th class="num">Monto</th><th></th></tr>`+S.pays.map(p=>`<tr>
-    <td class="mono">${fdate(p.paid_on)}</td><td>${esc(unitName(p.unit_id))}</td><td>${METHOD[p.method]}${p.source==="bank"?` <span class="chip bank">banco</span>`:""}</td><td style="color:var(--muted)">${esc(p.note)}</td>
-    <td class="num">${money(p.amount)}</td><td class="num" style="white-space:nowrap"><button class="btn sm ghost" data-rcpt="${p.id}">Recibo</button> <button class="btn danger" data-del="payments:${p.id}">Borrar</button></td></tr>`).join("")+
+  $("#pays").innerHTML=S.pays.length?`<table><tr><th>${t("Fecha","Date")}</th><th>${t("Unidad","Unit")}</th><th>${t("Forma","Method")}</th><th>${t("Nota","Note")}</th><th class="num">${t("Monto","Amount")}</th><th></th></tr>`+S.pays.map(p=>`<tr>
+    <td class="mono">${fdate(p.paid_on)}</td><td>${esc(unitName(p.unit_id))}</td><td>${METHOD()[p.method]}${p.source==="bank"?` <span class="chip bank">${t("banco","bank")}</span>`:""}</td><td style="color:var(--muted)">${esc(p.note)}</td>
+    <td class="num">${money(p.amount)}</td><td class="num" style="white-space:nowrap"><button class="btn sm ghost" data-rcpt="${p.id}">${t("Recibo","Receipt")}</button> <button class="btn danger" data-del="payments:${p.id}">${t("Borrar","Delete")}</button></td></tr>`).join("")+
     `<tr><td colspan="4"><b>Total</b></td><td class="num"><b>${money(S.pays.reduce((a,p)=>a+ +p.amount,0))}</b></td><td></td></tr></table>`
-    :`<p class="none">Ningún pago registrado en ${plabel(S.period)}.</p>`;
+    :`<p class="none">${t("Ningún pago registrado en","No payments recorded in")} ${plabel(S.period)}.</p>`;
   bindDel(); document.querySelectorAll("[data-rcpt]").forEach(b=>b.onclick=()=>receipt(S.pays.find(p=>p.id===b.dataset.rcpt)));
 }
 function rGastos(){
-  $("#exps").innerHTML=S.exps.length?`<table><tr><th>Fecha</th><th>Concepto</th><th>Propiedad</th><th>Categoría</th><th class="num">Monto</th><th></th></tr>`+S.exps.map(e=>`<tr>
-    <td class="mono">${fdate(e.date)}</td><td>${esc(e.note)||"—"}</td><td>${e.property_id?esc(propName(e.property_id)):"General"}${e.unit_id?`<span class="sub">${esc(S.units.find(u=>u.id===e.unit_id)?.name||"")}</span>`:""}</td><td>${CAT[e.category]}</td>
-    <td class="num">${money(e.amount)}</td><td class="num"><button class="btn danger" data-del="expenses:${e.id}">Borrar</button></td></tr>`).join("")+
+  $("#exps").innerHTML=S.exps.length?`<table><tr><th>${t("Fecha","Date")}</th><th>${t("Concepto","Description")}</th><th>${t("Propiedad","Property")}</th><th>${t("Categoría","Category")}</th><th class="num">${t("Monto","Amount")}</th><th></th></tr>`+S.exps.map(e=>`<tr>
+    <td class="mono">${fdate(e.date)}</td><td>${esc(e.note)||"—"}</td><td>${e.property_id?esc(propName(e.property_id)):"General"}${e.unit_id?`<span class="sub">${esc(S.units.find(u=>u.id===e.unit_id)?.name||"")}</span>`:""}</td><td>${CAT()[e.category]}</td>
+    <td class="num">${money(e.amount)}</td><td class="num"><button class="btn danger" data-del="expenses:${e.id}">${t("Borrar","Delete")}</button></td></tr>`).join("")+
     `<tr><td colspan="4"><b>Total</b></td><td class="num"><b>${money(S.exps.reduce((a,e)=>a+ +e.amount,0))}</b></td><td></td></tr></table>`
-    :`<p class="none">Ningún gasto registrado en ${plabel(S.period)}.</p>`;
+    :`<p class="none">${t("Ningún gasto registrado en","No expenses recorded in")} ${plabel(S.period)}.</p>`;
   bindDel();
 }
 function bindDel(){document.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{
-  const [t,id]=b.dataset.del.split(":");
-  confirmBox("¿Borrar este registro?",async()=>{const {error}=await sb.from(t).delete().eq("id",id); if(error) return toast(error.message); await loadAll(); render()});
+  const [tb,id]=b.dataset.del.split(":");
+  confirmBox(t("¿Borrar este registro?","Delete this record?"),async()=>{const {error}=await sb.from(tb).delete().eq("id",id); if(error) return toast(error.message); await loadAll(); render()});
 })}
 function rAjustes(){
   $("#s-name").value=S.org.name; $("#s-cur").value=S.org.currency;
   $("#me").textContent=S.user.email;
-  $("#members").innerHTML=`${S.members.length} persona${S.members.length===1?"":"s"} con acceso a <b>${esc(S.org.name)}</b>. Invita a tu contador o a quien administre contigo; ven lo mismo que tú.`;
+  $("#members").innerHTML=t(`${S.members.length} persona${S.members.length===1?"":"s"} con acceso a <b>${esc(S.org.name)}</b>. Invita a tu contador o a quien administre contigo; ven lo mismo que tú.`,
+    `${S.members.length} ${S.members.length===1?"person":"people"} with access to <b>${esc(S.org.name)}</b>. Invite your accountant or whoever manages with you; they see the same as you.`);
 }
 $("#org-form").onsubmit=async e=>{e.preventDefault();
   const {error}=await sb.from("orgs").update({name:$("#s-name").value.trim(),currency:$("#s-cur").value}).eq("id",S.org.id);
-  if(error) return toast(error.message); S.org.name=$("#s-name").value.trim(); S.org.currency=$("#s-cur").value; toast("Guardado"); render();
+  if(error) return toast(error.message); S.org.name=$("#s-name").value.trim(); S.org.currency=$("#s-cur").value; toast(t("Guardado","Saved")); render();
 };
 $("#inv-form").onsubmit=async e=>{e.preventDefault(); $("#inv-err").textContent="";
   const {error}=await sb.rpc("add_member",{p_org:S.org.id,p_email:$("#inv-email").value});
-  if(error){$("#inv-err").textContent=error.message.includes("no account")?"Esa persona aún no tiene cuenta en Atlas; pídele que se registre primero.":error.message; return}
-  $("#inv-email").value=""; toast("Invitado"); await loadAll(); render();
+  if(error){$("#inv-err").textContent=error.message.includes("no account")?t("Esa persona aún no tiene cuenta en Atlas; pídele que se registre primero.","That person doesn't have an Atlas account yet; ask them to sign up first."):error.message; return}
+  $("#inv-email").value=""; toast(t("Invitado","Invited")); await loadAll(); render();
 };
 
 // ---------- tenant history ----------
@@ -572,16 +603,16 @@ function bindHist(){document.querySelectorAll("[data-hist]").forEach(b=>b.onclic
 async function history(u){
   if(!u) return;
   $("#md-box").classList.add("wide");
-  modal(`${u.name} — historial`,`<p class="none" style="padding-top:0">Cargando…</p>`,async()=>{});
+  modal(`${u.name} — ${t("historial","history")}`,`<p class="none" style="padding-top:0">${t("Cargando…","Loading…")}</p>`,async()=>{});
   const {data,error}=await sb.from("payments").select("*").eq("unit_id",u.id).order("period",{ascending:false}).order("paid_on",{ascending:false});
   if(error){$("#md-body").innerHTML=`<p class="err">${esc(error.message)}</p>`; return}
   const byP={}; (data||[]).forEach(p=>{(byP[p.period]??=[]).push(p)});
   const periods=Object.keys(byP).sort().reverse();
   const total=(data||[]).reduce((a,p)=>a+ +p.amount,0);
   $("#md-body").innerHTML=`
-    <p style="font-size:14px;color:var(--ink-2);margin-bottom:10px"><b>${esc(u.tenant_name)||"Sin inquilino"}</b> · ${esc(propName(u.property_id))} · renta ${money(u.rent)} · vence el ${u.due_day}${u.contract_end?` · contrato hasta ${fdateL(u.contract_end)}`:""}${u.notes?`<br><span style="color:var(--muted)">${esc(u.notes)}</span>`:""}</p>
-    ${periods.length?`<table><tr><th>Mes</th><th>Pagos</th><th class="num">Total</th><th>Estado</th></tr>`+periods.map(p=>{const t=byP[p].reduce((a,x)=>a+ +x.amount,0); const k=t>=+u.rent-.005?"paid":"partial"; return `<tr><td>${plabel(p)}</td><td>${byP[p].map(x=>`${fdate(x.paid_on)} · ${money(x.amount)} · ${METHOD[x.method]}${x.note?` · ${esc(x.note)}`:""}`).join("<br>")}</td><td class="num">${money(t)}</td><td><span class="chip ${k}">${k==="paid"?"Completo":"Parcial"}</span></td></tr>`}).join("")+`<tr><td colspan="2"><b>Total histórico</b></td><td class="num"><b>${money(total)}</b></td><td></td></tr></table>`:`<p class="none">Sin pagos registrados todavía.</p>`}
-    <div class="actions"><button class="btn ghost" type="button" data-close>Cerrar</button></div>`;
+    <p style="font-size:14px;color:var(--ink-2);margin-bottom:10px"><b>${esc(u.tenant_name)||t("Sin inquilino","No tenant")}</b> · ${esc(propName(u.property_id))} · ${t("renta","rent")} ${money(u.rent)} · ${t("vence el","due on day")} ${u.due_day}${u.contract_end?` · ${t("contrato hasta","contract until")} ${fdateL(u.contract_end)}`:""}${u.notes?`<br><span style="color:var(--muted)">${esc(u.notes)}</span>`:""}</p>
+    ${periods.length?`<table><tr><th>${t("Mes","Month")}</th><th>${t("Pagos","Payments")}</th><th class="num">Total</th><th>${t("Estado","Status")}</th></tr>`+periods.map(p=>{const tot=byP[p].reduce((a,x)=>a+ +x.amount,0); const k=tot>=+u.rent-.005?"paid":"partial"; return `<tr><td>${plabel(p)}</td><td>${byP[p].map(x=>`${fdate(x.paid_on)} · ${money(x.amount)} · ${METHOD()[x.method]}${x.note?` · ${esc(x.note)}`:""}`).join("<br>")}</td><td class="num">${money(tot)}</td><td><span class="chip ${k}">${k==="paid"?t("Completo","Complete"):t("Parcial","Partial")}</span></td></tr>`}).join("")+`<tr><td colspan="2"><b>${t("Total histórico","All-time total")}</b></td><td class="num"><b>${money(total)}</b></td><td></td></tr></table>`:`<p class="none">${t("Sin pagos registrados todavía.","No payments recorded yet.")}</p>`}
+    <div class="actions"><button class="btn ghost" type="button" data-close>${t("Cerrar","Close")}</button></div>`;
   $("#md-body").querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$("#modal").hidden=true);
 }
 
@@ -594,7 +625,7 @@ function modal(title,html,onsubmit){
 }
 function confirmBox(text,yes){
   $("#md-box").classList.remove("wide");
-  modal("Confirmar",`<p style="font-size:14px">${esc(text)}</p><div class="actions"><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="button" id="cf-yes">Sí</button></div>`,async()=>{});
+  modal(t("Confirmar","Confirm"),`<p style="font-size:14px">${esc(text)}</p><div class="actions"><button class="btn ghost" type="button" data-close>${t("Cancelar","Cancel")}</button><button class="btn" type="button" id="cf-yes">${t("Sí","Yes")}</button></div>`,async()=>{});
   $("#cf-yes").onclick=async()=>{$("#modal").hidden=true; await yes()};
 }
 $("#md-x").onclick=()=>$("#modal").hidden=true;
@@ -602,18 +633,18 @@ $("#modal").addEventListener("click",e=>{if(e.target.id==="modal") $("#modal").h
 const opt=(list,sel,fmt)=>list.map(x=>`<option value="${x.id}" ${x.id===sel?"selected":""}>${esc(fmt(x))}</option>`).join("");
 const unitOpts=sel=>opt(S.units,sel,u=>`${propName(u.property_id)} · ${u.name}`);
 const propOpts=(sel,blank)=>(blank?`<option value="">General</option>`:"")+opt(S.props,sel,p=>p.name);
-const del=(t,id)=>`<button class="btn danger" type="button" data-delrec="${t}:${id}">Eliminar</button>`;
+const del=(tb,id)=>`<button class="btn danger" type="button" data-delrec="${tb}:${id}">${t("Eliminar","Delete")}</button>`;
 function bindDelRec(){document.querySelectorAll("[data-delrec]").forEach(b=>b.onclick=()=>{
-  const [t,id]=b.dataset.delrec.split(":");
-  confirmBox("¿Eliminar? Se borra también lo que dependa de esto.",async()=>{const {error}=await sb.from(t).delete().eq("id",id); if(error) return toast(error.message); await loadAll(); render()});
+  const [tb,id]=b.dataset.delrec.split(":");
+  confirmBox(t("¿Eliminar? Se borra también lo que dependa de esto.","Delete? Anything that depends on this is deleted too."),async()=>{const {error}=await sb.from(tb).delete().eq("id",id); if(error) return toast(error.message); await loadAll(); render()});
 })}
 
 function propForm(p){
   $("#md-box").classList.remove("wide");
-  modal(p?"Editar propiedad":"Nueva propiedad",`<div class="form">
-    <label class="wide">Nombre <input type="text" name="name" value="${esc(p?.name||"")}" placeholder="Edificio Reforma 12" required></label>
-    <label class="wide">Dirección <input type="text" name="address" value="${esc(p?.address||"")}"></label>
-    <div class="actions wide">${p?del("properties",p.id):""}<button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit">Guardar</button></div></div>`,
+  modal(p?t("Editar propiedad","Edit property"):t("Nueva propiedad","New property"),`<div class="form">
+    <label class="wide">${t("Nombre","Name")} <input type="text" name="name" value="${esc(p?.name||"")}" placeholder="${t("Edificio Reforma 12","Reforma 12 Building")}" required></label>
+    <label class="wide">${t("Dirección","Address")} <input type="text" name="address" value="${esc(p?.address||"")}"></label>
+    <div class="actions wide">${p?del("properties",p.id):""}<button class="btn ghost" type="button" data-close>${t("Cancelar","Cancel")}</button><button class="btn" type="submit">${t("Guardar","Save")}</button></div></div>`,
     async fd=>{const row={org_id:S.org.id,name:fd.get("name").trim(),address:fd.get("address").trim()};
       const r=p? await sb.from("properties").update(row).eq("id",p.id) : await sb.from("properties").insert(row); return r.error?.message});
   bindDelRec();
@@ -621,35 +652,35 @@ function propForm(p){
 function unitForm(u){
   if(!S.props.length) return propForm();
   $("#md-box").classList.remove("wide");
-  modal(u?"Editar unidad":"Nueva unidad",`<div class="form">
-    <label class="wide">Propiedad <select name="property_id">${propOpts(u?.property_id||S.props[0].id)}</select></label>
-    <label>Unidad <input type="text" name="name" value="${esc(u?.name||"")}" placeholder="Depto 4B" required></label>
-    <label>Renta mensual <input type="number" name="rent" min="0" step="0.01" value="${u?.rent||""}" required></label>
-    <label>Día de pago <input type="number" name="due_day" min="1" max="31" value="${u?.due_day||1}" required></label>
-    <label>Estado <select name="status"><option value="occupied" ${u?.status!=="vacant"?"selected":""}>Ocupada</option><option value="vacant" ${u?.status==="vacant"?"selected":""}>Vacía</option></select></label>
-    <label>Inquilino <input type="text" name="tenant_name" value="${esc(u?.tenant_name||"")}"></label>
-    <label>Teléfono (WhatsApp) <input type="tel" name="tenant_phone" value="${esc(u?.tenant_phone||"")}" placeholder="55 1234 5678"></label>
-    <label>Fin de contrato <input type="date" name="contract_end" value="${u?.contract_end||""}"></label>
-    <label class="wide">Palabras del banco <small>— como aparece en la transferencia, separadas por coma</small><input type="text" name="match" value="${esc(u?.match||"")}" placeholder="LAURA MARTINEZ, RENTA 1A"></label>
-    <label class="wide">Notas <input type="text" name="notes" value="${esc(u?.notes||"")}" placeholder="Depósito en garantía 1 mes"></label>
-    <div class="actions wide">${u?del("units",u.id):""}<button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit">Guardar</button></div></div>`,
+  modal(u?t("Editar unidad","Edit unit"):t("Nueva unidad","New unit"),`<div class="form">
+    <label class="wide">${t("Propiedad","Property")} <select name="property_id">${propOpts(u?.property_id||S.props[0].id)}</select></label>
+    <label>${t("Unidad","Unit")} <input type="text" name="name" value="${esc(u?.name||"")}" placeholder="${t("Depto 4B","Apt 4B")}" required></label>
+    <label>${t("Renta mensual","Monthly rent")} <input type="number" name="rent" min="0" step="0.01" value="${u?.rent||""}" required></label>
+    <label>${t("Día de pago","Due day")} <input type="number" name="due_day" min="1" max="31" value="${u?.due_day||1}" required></label>
+    <label>${t("Estado","Status")} <select name="status"><option value="occupied" ${u?.status!=="vacant"?"selected":""}>${t("Ocupada","Occupied")}</option><option value="vacant" ${u?.status==="vacant"?"selected":""}>${t("Vacía","Vacant")}</option></select></label>
+    <label>${t("Inquilino","Tenant")} <input type="text" name="tenant_name" value="${esc(u?.tenant_name||"")}"></label>
+    <label>${t("Teléfono (WhatsApp)","Phone (WhatsApp)")} <input type="tel" name="tenant_phone" value="${esc(u?.tenant_phone||"")}" placeholder="55 1234 5678"></label>
+    <label>${t("Fin de contrato","Contract end")} <input type="date" name="contract_end" value="${u?.contract_end||""}"></label>
+    <label class="wide">${t("Palabras del banco","Bank keywords")} <small>${t("— como aparece en la transferencia, separadas por coma","— as it appears on the transfer, separated by commas")}</small><input type="text" name="match" value="${esc(u?.match||"")}" placeholder="LAURA MARTINEZ, RENTA 1A"></label>
+    <label class="wide">${t("Notas","Notes")} <input type="text" name="notes" value="${esc(u?.notes||"")}" placeholder="${t("Depósito en garantía 1 mes","1-month security deposit")}"></label>
+    <div class="actions wide">${u?del("units",u.id):""}<button class="btn ghost" type="button" data-close>${t("Cancelar","Cancel")}</button><button class="btn" type="submit">${t("Guardar","Save")}</button></div></div>`,
     async fd=>{const row={org_id:S.org.id}; for(const k of ["property_id","name","rent","due_day","status","tenant_name","tenant_phone","contract_end","match","notes"]) row[k]=String(fd.get(k)??"").trim();
       row.rent=+row.rent; row.due_day=+row.due_day; row.contract_end=row.contract_end||null;
       const r=u? await sb.from("units").update(row).eq("id",u.id) : await sb.from("units").insert(row); return r.error?.message});
   bindDelRec();
 }
 function payForm(unitId){
-  if(!S.units.length) return toast("Primero agrega una unidad.");
+  if(!S.units.length) return toast(t("Primero agrega una unidad.","Add a unit first."));
   const u=S.units.find(x=>x.id===unitId)||S.units[0];
   $("#md-box").classList.remove("wide");
-  modal("Registrar pago",`<div class="form">
-    <label class="wide">Unidad <select name="unit_id" id="pf-unit">${unitOpts(u.id)}</select></label>
-    <label>Monto <input type="number" name="amount" id="pf-amt" min="0" step="0.01" value="${u.rent}" required></label>
-    <label>Fecha <input type="date" name="paid_on" value="${today()}" required></label>
-    <label>Mes de renta <input type="text" name="period" value="${S.period}" pattern="\\d{4}-\\d{2}" required></label>
-    <label>Forma <select name="method">${Object.entries(METHOD).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
-    <label class="wide">Nota <input type="text" name="note" placeholder="Pagó la mitad, resto el 20"></label>
-    <div class="actions wide"><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit">Guardar</button></div></div>`,
+  modal(t("Registrar pago","Record payment"),`<div class="form">
+    <label class="wide">${t("Unidad","Unit")} <select name="unit_id" id="pf-unit">${unitOpts(u.id)}</select></label>
+    <label>${t("Monto","Amount")} <input type="number" name="amount" id="pf-amt" min="0" step="0.01" value="${u.rent}" required></label>
+    <label>${t("Fecha","Date")} <input type="date" name="paid_on" value="${today()}" required></label>
+    <label>${t("Mes de renta","Rent month")} <input type="text" name="period" value="${S.period}" pattern="\\d{4}-\\d{2}" required></label>
+    <label>${t("Forma","Method")} <select name="method">${Object.entries(METHOD()).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
+    <label class="wide">${t("Nota","Note")} <input type="text" name="note" placeholder="${t("Pagó la mitad, resto el 20","Paid half, the rest on the 20th")}"></label>
+    <div class="actions wide"><button class="btn ghost" type="button" data-close>${t("Cancelar","Cancel")}</button><button class="btn" type="submit">${t("Guardar","Save")}</button></div></div>`,
     async fd=>{const row={org_id:S.org.id,unit_id:fd.get("unit_id"),amount:+fd.get("amount"),paid_on:fd.get("paid_on"),period:fd.get("period"),method:fd.get("method"),note:fd.get("note").trim()};
       const r=await sb.from("payments").insert(row); if(!r.error && row.period!==S.period){S.period=row.period} return r.error?.message});
   $("#pf-unit").onchange=e=>{const x=S.units.find(z=>z.id===e.target.value); if(x) $("#pf-amt").value=x.rent};
@@ -657,18 +688,18 @@ function payForm(unitId){
 async function quickPay(unitId){
   const u=S.units.find(x=>x.id===unitId); const s=unitStatus(u); const amt=+u.rent-s.paid;
   const {error}=await sb.from("payments").insert({org_id:S.org.id,unit_id:u.id,amount:amt,period:S.period,paid_on:today(),method:"transfer"});
-  if(error) return toast(error.message); toast(`${u.name}: ${money(amt)} cobrado`); await loadAll(); render();
+  if(error) return toast(error.message); toast(`${u.name}: ${money(amt)} ${t("cobrado","collected")}`); await loadAll(); render();
 }
 function expForm(){
   $("#md-box").classList.remove("wide");
-  modal("Registrar gasto",`<div class="form">
-    <label>Monto <input type="number" name="amount" min="0" step="0.01" required></label>
-    <label>Fecha <input type="date" name="date" value="${today()}" required></label>
-    <label>Categoría <select name="category">${Object.entries(CAT).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
-    <label>Propiedad <select name="property_id" id="ef-prop">${propOpts("",true)}</select></label>
-    <label class="wide">Unidad (opcional) <select name="unit_id" id="ef-unit"><option value="">—</option>${unitOpts("")}</select></label>
-    <label class="wide">Concepto <input type="text" name="note" placeholder="Plomero, fuga en el baño" required></label>
-    <div class="actions wide"><button class="btn ghost" type="button" data-close>Cancelar</button><button class="btn" type="submit">Guardar</button></div></div>`,
+  modal(t("Registrar gasto","Record expense"),`<div class="form">
+    <label>${t("Monto","Amount")} <input type="number" name="amount" min="0" step="0.01" required></label>
+    <label>${t("Fecha","Date")} <input type="date" name="date" value="${today()}" required></label>
+    <label>${t("Categoría","Category")} <select name="category">${Object.entries(CAT()).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select></label>
+    <label>${t("Propiedad","Property")} <select name="property_id" id="ef-prop">${propOpts("",true)}</select></label>
+    <label class="wide">${t("Unidad (opcional)","Unit (optional)")} <select name="unit_id" id="ef-unit"><option value="">—</option>${unitOpts("")}</select></label>
+    <label class="wide">${t("Concepto","Description")} <input type="text" name="note" placeholder="${t("Plomero, fuga en el baño","Plumber, bathroom leak")}" required></label>
+    <div class="actions wide"><button class="btn ghost" type="button" data-close>${t("Cancelar","Cancel")}</button><button class="btn" type="submit">${t("Guardar","Save")}</button></div></div>`,
     async fd=>{const row={org_id:S.org.id,amount:+fd.get("amount"),date:fd.get("date"),category:fd.get("category"),property_id:fd.get("property_id")||null,unit_id:fd.get("unit_id")||null,note:fd.get("note").trim()};
       if(row.unit_id && !row.property_id) row.property_id=S.units.find(u=>u.id===row.unit_id)?.property_id||null;
       const r=await sb.from("expenses").insert(row); if(!r.error && row.date.slice(0,7)!==S.period) S.period=row.date.slice(0,7); return r.error?.message});
@@ -682,21 +713,21 @@ function parseAmount(s){const m=s.replace(/\s/g,"").match(/\$?([\d]{1,3}(?:[,.]\
 function parseDate(s){
   let m=s.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/); if(m){let y=m[3].length===2?"20"+m[3]:m[3]; return `${y}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}`}
   m=s.match(/(\d{4})-(\d{2})-(\d{2})/); if(m) return m[0];
-  m=norm(s).match(/(\d{1,2})\s+DE\s+([A-Z]+)(?:\s+(?:DE\s+)?(\d{4}))?/); if(m){const mi=MONTHS.findIndex(x=>norm(x).startsWith(m[2].slice(0,3))); if(mi>=0){const y=m[3]||today().slice(0,4); return `${y}-${String(mi+1).padStart(2,"0")}-${m[1].padStart(2,"0")}`}}
+  m=norm(s).match(/(\d{1,2})\s+DE\s+([A-Z]+)(?:\s+(?:DE\s+)?(\d{4}))?/); if(m){const mi=MES.findIndex(x=>norm(x).startsWith(m[2].slice(0,3))); if(mi>=0){const y=m[3]||today().slice(0,4); return `${y}-${String(mi+1).padStart(2,"0")}-${m[1].padStart(2,"0")}`}}
   return null;
 }
 function fingerprint(s){let h=0; for(const c of s) h=(h*31+c.charCodeAt(0))|0; return "fp"+(h>>>0).toString(36)}
 function guessUnit(text,amount){
   const T=norm(text); const scored=S.units.filter(u=>u.status!=="vacant").map(u=>{
     let sc=0, why=[];
-    (u.match||"").split(",").map(x=>norm(x.trim())).filter(x=>x.length>=3).forEach(k=>{if(T.includes(k)){sc+=5; why.push("palabra clave")}});
-    norm(u.tenant_name||"").split(/\s+/).filter(w=>w.length>=4).forEach(w=>{if(T.includes(w)){sc+=2; why.push("nombre")}});
-    if(amount!=null && Math.abs(+u.rent-amount)<0.5){sc+=3; why.push("monto = renta")}
-    if(T.includes(norm(u.name))){sc+=2; why.push("unidad")}
+    (u.match||"").split(",").map(x=>norm(x.trim())).filter(x=>x.length>=3).forEach(k=>{if(T.includes(k)){sc+=5; why.push("kw")}});
+    norm(u.tenant_name||"").split(/\s+/).filter(w=>w.length>=4).forEach(w=>{if(T.includes(w)){sc+=2; why.push("name")}});
+    if(amount!=null && Math.abs(+u.rent-amount)<0.5){sc+=3; why.push("amt")}
+    if(T.includes(norm(u.name))){sc+=2; why.push("unit")}
     return {u,sc,why:[...new Set(why)]};
   }).sort((a,b)=>b.sc-a.sc);
   const best=scored[0]; if(!best||best.sc===0) return null;
-  const tie=scored[1]&&scored[1].sc===best.sc; return tie?{...best,why:[...best.why,"empate"]}:best;
+  const tie=scored[1]&&scored[1].sc===best.sc; return tie?{...best,why:[...best.why,"tie"]}:best;
 }
 function splitAlerts(text){
   // one alert per paragraph; if a single paragraph holds several amounts, split on "BBVA"/"Recibiste"/"Has recibido"
@@ -723,31 +754,31 @@ function scanCSV(csv){
 }
 async function showCands(list){
   S.cands=list;
-  if(!list.length){$("#cands").innerHTML=`<p class="none">No encontré abonos. Revisa que el texto traiga un monto (p. ej. $14,500.00).</p>`; $("#cand-right").textContent=""; return}
+  if(!list.length){$("#cands").innerHTML=`<p class="none">${t("No encontré abonos. Revisa que el texto traiga un monto (p. ej. $14,500.00).","I didn't find any deposits. Check that the text includes an amount (e.g. $14,500.00).")}</p>`; $("#cand-right").textContent=""; return}
   const refs=list.map(c=>c.ref); const {data:dup}=await sb.from("payments").select("bank_ref").eq("org_id",S.org.id).in("bank_ref",refs);
   const seen=new Set((dup||[]).map(d=>d.bank_ref));
-  $("#cand-right").textContent=`${list.length} abono${list.length===1?"":"s"}`;
+  $("#cand-right").textContent=t(`${list.length} abono${list.length===1?"":"s"}`,`${list.length} deposit${list.length===1?"":"s"}`);
   $("#cands").innerHTML=list.map((c,i)=>`<div class="cand" data-i="${i}">
-    <div><div class="amt">${money2(c.amount)}</div><div class="txt">${esc(c.text)}</div><span class="sub" style="font-size:12px;color:var(--muted)">${fdateL(c.date)}${c.guess?` · ${c.guess.why.join(", ")}`:" · sin coincidencia"}${seen.has(c.ref)?` · <b style="color:var(--crit)">ya importado</b>`:""}</span></div>
-    <div><select data-unit="${i}"><option value="">— elegir unidad —</option>${unitOpts(c.guess?.u.id||"")}</select>
-      <input type="text" data-period="${i}" value="${c.date.slice(0,7)}" pattern="\\d{4}-\\d{2}" style="margin-top:6px" title="Mes de renta"></div>
-    <div><button class="btn sm" data-imp="${i}" ${seen.has(c.ref)?"disabled":""}>Registrar</button></div></div>`).join("")+
-    `<div class="actions"><button class="btn" id="imp-all">Registrar todos los asignados</button></div>`;
+    <div><div class="amt">${money2(c.amount)}</div><div class="txt">${esc(c.text)}</div><span class="sub" style="font-size:12px;color:var(--muted)">${fdateL(c.date)}${c.guess?` · ${c.guess.why.map(w=>WHY()[w]||w).join(", ")}`:t(" · sin coincidencia"," · no match")}${seen.has(c.ref)?` · <b style="color:var(--crit)">${t("ya importado","already imported")}</b>`:""}</span></div>
+    <div><select data-unit="${i}"><option value="">${t("— elegir unidad —","— choose unit —")}</option>${unitOpts(c.guess?.u.id||"")}</select>
+      <input type="text" data-period="${i}" value="${c.date.slice(0,7)}" pattern="\\d{4}-\\d{2}" style="margin-top:6px" title="${t("Mes de renta","Rent month")}"></div>
+    <div><button class="btn sm" data-imp="${i}" ${seen.has(c.ref)?"disabled":""}>${t("Registrar","Record")}</button></div></div>`).join("")+
+    `<div class="actions"><button class="btn" id="imp-all">${t("Registrar todos los asignados","Record all assigned")}</button></div>`;
   document.querySelectorAll("[data-imp]").forEach(b=>b.onclick=()=>importCand(+b.dataset.imp));
-  $("#imp-all").onclick=async()=>{let n=0; for(let i=0;i<list.length;i++){const sel=document.querySelector(`[data-unit="${i}"]`); const btn=document.querySelector(`[data-imp="${i}"]`); if(sel?.value&&btn&&!btn.disabled){if(await importCand(i,true)) n++}} toast(`${n} pago${n===1?"":"s"} registrado${n===1?"":"s"}`); await loadAll(); render()};
+  $("#imp-all").onclick=async()=>{let n=0; for(let i=0;i<list.length;i++){const sel=document.querySelector(`[data-unit="${i}"]`); const btn=document.querySelector(`[data-imp="${i}"]`); if(sel?.value&&btn&&!btn.disabled){if(await importCand(i,true)) n++}} toast(t(`${n} pago${n===1?"":"s"} registrado${n===1?"":"s"}`,`${n} payment${n===1?"":"s"} recorded`)); await loadAll(); render()};
 }
 async function importCand(i,quiet){
   const c=S.cands[i]; const unit_id=document.querySelector(`[data-unit="${i}"]`).value; const period=document.querySelector(`[data-period="${i}"]`).value;
-  if(!unit_id){if(!quiet) toast("Elige la unidad primero."); return false}
-  if(!/^\d{4}-\d{2}$/.test(period)){if(!quiet) toast("Mes inválido (AAAA-MM)."); return false}
+  if(!unit_id){if(!quiet) toast(t("Elige la unidad primero.","Choose the unit first.")); return false}
+  if(!/^\d{4}-\d{2}$/.test(period)){if(!quiet) toast(t("Mes inválido (AAAA-MM).","Invalid month (YYYY-MM).")); return false}
   const {error}=await sb.from("payments").insert({org_id:S.org.id,unit_id,amount:c.amount,paid_on:c.date,period,method:"transfer",source:"bank",bank_ref:c.ref,note:c.text.slice(0,120)});
-  if(error){if(!quiet) toast(error.message.includes("duplicate")?"Ese abono ya estaba registrado.":error.message); return false}
-  const btn=document.querySelector(`[data-imp="${i}"]`); btn.disabled=true; btn.textContent="Listo";
-  if(!quiet){toast("Pago registrado"); await loadAll(); if(S.view!=="banco") render()}
+  if(error){if(!quiet) toast(error.message.includes("duplicate")?t("Ese abono ya estaba registrado.","That deposit was already recorded."):error.message); return false}
+  const btn=document.querySelector(`[data-imp="${i}"]`); btn.disabled=true; btn.textContent=t("Listo","Done");
+  if(!quiet){toast(t("Pago registrado","Payment recorded")); await loadAll(); if(S.view!=="banco") render()}
   return true;
 }
-function rBanco(){ if(!S.cands.length){$("#cands").innerHTML=`<p class="none">Nada todavía.</p>`; $("#cand-right").textContent=""} }
-$("#bank-scan").onclick=()=>{const t=$("#bank-text").value.trim(); if(!t) return toast("Pega primero las alertas."); showCands(scanText(t))};
+function rBanco(){ if(!S.cands.length){$("#cands").innerHTML=`<p class="none">${t("Nada todavía.","Nothing yet.")}</p>`; $("#cand-right").textContent=""} }
+$("#bank-scan").onclick=()=>{const txt=$("#bank-text").value.trim(); if(!txt) return toast(t("Pega primero las alertas.","Paste the alerts first.")); showCands(scanText(txt))};
 $("#bank-csv").onchange=e=>{const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>showCands(scanCSV(String(r.result))); r.readAsText(f,"utf-8"); e.target.value=""};
 
 // ---------- report & receipts (print → PDF) ----------
@@ -755,25 +786,25 @@ function printHTML(html){ $("#print").innerHTML=html; setTimeout(()=>window.prin
 function report(){
   const occ=S.units.filter(u=>u.status!=="vacant"); const expected=occ.reduce((a,u)=>a+ +u.rent,0);
   const collected=S.pays.reduce((a,p)=>a+ +p.amount,0); const spent=S.exps.reduce((a,e)=>a+ +e.amount,0);
-  printHTML(`<h1>${esc(S.org.name)}</h1><div class="meta">Reporte de rentas y gastos · ${plabel(S.period)} · generado ${fdateL(today())}</div>
-    <table><tr><th>Renta esperada</th><th>Cobrado</th><th>Pendiente</th><th>Gastos</th><th>Flujo neto</th></tr>
+  printHTML(`<h1>${esc(S.org.name)}</h1><div class="meta">${t("Reporte de rentas y gastos","Rent and expense report")} · ${plabel(S.period)} · ${t("generado","generated")} ${fdateL(today())}</div>
+    <table><tr><th>${t("Renta esperada","Expected rent")}</th><th>${t("Cobrado","Collected")}</th><th>${t("Pendiente","Outstanding")}</th><th>${t("Gastos","Expenses")}</th><th>${t("Flujo neto","Net cash flow")}</th></tr>
     <tr class="tot"><td>${money2(expected)}</td><td>${money2(collected)}</td><td>${money2(Math.max(0,expected-collected))}</td><td>${money2(spent)}</td><td>${money2(collected-spent)}</td></tr></table>
-    <h2>Unidades</h2><table><tr><th>Propiedad</th><th>Unidad</th><th>Inquilino</th><th class="num">Renta</th><th class="num">Cobrado</th><th>Estado</th></tr>
+    <h2>${t("Unidades","Units")}</h2><table><tr><th>${t("Propiedad","Property")}</th><th>${t("Unidad","Unit")}</th><th>${t("Inquilino","Tenant")}</th><th class="num">${t("Renta","Rent")}</th><th class="num">${t("Cobrado","Collected")}</th><th>${t("Estado","Status")}</th></tr>
     ${S.units.map(u=>{const s=unitStatus(u); return `<tr><td>${esc(propName(u.property_id))}</td><td>${esc(u.name)}</td><td>${esc(u.tenant_name)||"—"}</td><td class="num">${money2(u.rent)}</td><td class="num">${money2(s.paid)}</td><td>${s.t}</td></tr>`}).join("")}</table>
-    <h2>Pagos</h2>${S.pays.length?`<table><tr><th>Fecha</th><th>Unidad</th><th>Forma</th><th>Nota</th><th class="num">Monto</th></tr>${S.pays.map(p=>`<tr><td>${fdate(p.paid_on)}</td><td>${esc(unitName(p.unit_id))}</td><td>${METHOD[p.method]}</td><td>${esc(p.note)}</td><td class="num">${money2(p.amount)}</td></tr>`).join("")}<tr class="tot"><td colspan="4">Total</td><td class="num">${money2(collected)}</td></tr></table>`:"<p>Sin pagos.</p>"}
-    <h2>Gastos</h2>${S.exps.length?`<table><tr><th>Fecha</th><th>Concepto</th><th>Propiedad</th><th>Categoría</th><th class="num">Monto</th></tr>${S.exps.map(e=>`<tr><td>${fdate(e.date)}</td><td>${esc(e.note)}</td><td>${e.property_id?esc(propName(e.property_id)):"General"}</td><td>${CAT[e.category]}</td><td class="num">${money2(e.amount)}</td></tr>`).join("")}<tr class="tot"><td colspan="4">Total</td><td class="num">${money2(spent)}</td></tr></table>`:"<p>Sin gastos.</p>"}`);
+    <h2>${t("Pagos","Payments")}</h2>${S.pays.length?`<table><tr><th>${t("Fecha","Date")}</th><th>${t("Unidad","Unit")}</th><th>${t("Forma","Method")}</th><th>${t("Nota","Note")}</th><th class="num">${t("Monto","Amount")}</th></tr>${S.pays.map(p=>`<tr><td>${fdate(p.paid_on)}</td><td>${esc(unitName(p.unit_id))}</td><td>${METHOD()[p.method]}</td><td>${esc(p.note)}</td><td class="num">${money2(p.amount)}</td></tr>`).join("")}<tr class="tot"><td colspan="4">Total</td><td class="num">${money2(collected)}</td></tr></table>`:`<p>${t("Sin pagos.","No payments.")}</p>`}
+    <h2>${t("Gastos","Expenses")}</h2>${S.exps.length?`<table><tr><th>${t("Fecha","Date")}</th><th>${t("Concepto","Description")}</th><th>${t("Propiedad","Property")}</th><th>${t("Categoría","Category")}</th><th class="num">${t("Monto","Amount")}</th></tr>${S.exps.map(e=>`<tr><td>${fdate(e.date)}</td><td>${esc(e.note)}</td><td>${e.property_id?esc(propName(e.property_id)):"General"}</td><td>${CAT()[e.category]}</td><td class="num">${money2(e.amount)}</td></tr>`).join("")}<tr class="tot"><td colspan="4">Total</td><td class="num">${money2(spent)}</td></tr></table>`:`<p>${t("Sin gastos.","No expenses.")}</p>`}`);
 }
 function receipt(p){
   const u=S.units.find(x=>x.id===p.unit_id)||{};
-  printHTML(`<div class="receipt"><div class="meta">${esc(S.org.name)}</div><h1>Recibo de renta</h1>
-    <div class="row"><span>Folio</span><span>${p.id.slice(0,8).toUpperCase()}</span></div>
-    <div class="row"><span>Recibí de</span><span>${esc(u.tenant_name)||"—"}</span></div>
-    <div class="row"><span>Por concepto de</span><span>Renta de ${esc(u.name||"")}, ${esc(propName(u.property_id))}</span></div>
-    <div class="row"><span>Periodo</span><span>${plabel(p.period)}</span></div>
-    <div class="row"><span>Fecha de pago</span><span>${fdateL(p.paid_on)}</span></div>
-    <div class="row"><span>Forma de pago</span><span>${METHOD[p.method]}</span></div>
+  printHTML(`<div class="receipt"><div class="meta">${esc(S.org.name)}</div><h1>${t("Recibo de renta","Rent receipt")}</h1>
+    <div class="row"><span>${t("Folio","Receipt no.")}</span><span>${p.id.slice(0,8).toUpperCase()}</span></div>
+    <div class="row"><span>${t("Recibí de","Received from")}</span><span>${esc(u.tenant_name)||"—"}</span></div>
+    <div class="row"><span>${t("Por concepto de","For")}</span><span>${t("Renta de","Rent for")} ${esc(u.name||"")}, ${esc(propName(u.property_id))}</span></div>
+    <div class="row"><span>${t("Periodo","Period")}</span><span>${plabel(p.period)}</span></div>
+    <div class="row"><span>${t("Fecha de pago","Payment date")}</span><span>${fdateL(p.paid_on)}</span></div>
+    <div class="row"><span>${t("Forma de pago","Payment method")}</span><span>${METHOD()[p.method]}</span></div>
     <div class="big">${money2(p.amount)}</div>${p.note?`<div class="meta">${esc(p.note)}</div>`:""}
-    <div class="sign"><div>Recibió</div><div>Entregó</div></div></div>`);
+    <div class="sign"><div>${t("Recibió","Received by")}</div><div>${t("Entregó","Paid by")}</div></div></div>`);
 }
 $("#report").onclick=report;
 
@@ -785,6 +816,24 @@ $("#add-prop").onclick=()=>propForm(); $("#add-unit").onclick=()=>unitForm();
 $("#add-pay").onclick=()=>payForm(); $("#add-exp").onclick=()=>expForm();
 document.addEventListener("keydown",e=>{if(e.key==="Escape") $("#modal").hidden=true});
 sb.auth.onAuthStateChange((ev)=>{ if(ev==="SIGNED_OUT"){$("#app").hidden=true; $("#gate").hidden=false} });
+
+// ---------- language switch ----------
+function applyLang(){
+  document.documentElement.lang=LANG;
+  document.title=t("Atlas — rentas y flujo","Atlas — rent and cash flow");
+  document.querySelectorAll("[data-en]").forEach(e=>{if(e.dataset.es==null) e.dataset.es=e.textContent; e.textContent=LANG==="en"?e.dataset.en:e.dataset.es});
+  document.querySelectorAll("[data-en-ph]").forEach(e=>{if(e.dataset.esPh==null) e.dataset.esPh=e.placeholder; e.placeholder=LANG==="en"?e.dataset.enPh:e.dataset.esPh});
+  document.querySelectorAll("[data-en-title]").forEach(e=>{if(e.dataset.esTitle==null) e.dataset.esTitle=e.title; e.title=LANG==="en"?e.dataset.enTitle:e.dataset.esTitle});
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===LANG));
+  gateText();
+}
+function setLang(l){
+  LANG=l==="en"?"en":"es"; try{localStorage.setItem("atlas.lang",LANG)}catch(e){}
+  applyLang();
+  if(S.org && !$("#app").hidden){render(); if(S.view==="banco" && S.cands.length) showCands(S.cands)}
+}
+document.addEventListener("click",e=>{const b=e.target.closest(".lang button"); if(b) setLang(b.dataset.lang)});
+applyLang();
 boot();
 </script>
 </body>
