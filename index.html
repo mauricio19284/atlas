@@ -126,21 +126,23 @@ body[data-view=resumen] .heroside{grid-area:1/2/3/3; display:flex; flex-directio
 .hex{grid-column:span 2; width:var(--hw); height:var(--hh); padding:3px; background:none; border:0; cursor:pointer}
 .hex:nth-child(1){grid-area:1/1/auto/span 2} .hex:nth-child(2){grid-area:1/3/auto/span 2} .hex:nth-child(3){grid-area:1/5/auto/span 2}
 .hex:nth-child(4){grid-area:2/2/auto/span 2} .hex:nth-child(5){grid-area:2/4/auto/span 2} .hex:nth-child(6){grid-area:2/6/auto/span 2}
-.hx{position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; width:100%; height:100%; background:rgba(255,255,255,.62); color:#161412;
-  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); transition:background .2s, transform .2s}
-.hx::before{content:""; position:absolute; inset:1px; background:rgba(255,255,255,.52); -webkit-backdrop-filter:blur(10px) saturate(130%); backdrop-filter:blur(10px) saturate(130%);
-  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); transition:background .2s}
+.hx{position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px; width:100%; height:100%; color:#fff; text-shadow:0 1px 10px rgba(0,0,0,.45); transition:transform .2s}
+/* the inside: clear glass that blurs the photograph behind it, with a soft light sweep */
+.hx::before{content:""; position:absolute; inset:0; clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%); transition:background .2s;
+  background:linear-gradient(140deg,rgba(255,255,255,.30) 0,rgba(255,255,255,.08) 42%,rgba(255,255,255,.04) 60%,rgba(255,255,255,.16) 100%);
+  -webkit-backdrop-filter:blur(16px) saturate(170%) brightness(1.06); backdrop-filter:blur(16px) saturate(170%) brightness(1.06)}
+/* the outline: only the white edge of the hexagon is drawn */
+.hx::after{content:""; position:absolute; inset:0; pointer-events:none; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 115.47' preserveAspectRatio='none'%3E%3Cpolygon points='50,1.2 99,29.4 99,86.1 50,114.3 1,86.1 1,29.4' fill='none' stroke='white' stroke-width='2' stroke-linejoin='round' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat; opacity:.95}
 .hx svg,.hx b,.hx em{position:relative}
 .hx svg{width:21px; height:21px; fill:none; stroke:currentColor; stroke-width:1.25; stroke-linecap:round; stroke-linejoin:round}
 .hx em{font-style:normal; font-weight:500; font-size:8.5px; letter-spacing:.22em; text-transform:uppercase; text-align:center; padding-inline:6px}
 .hx b{font-weight:500; font-size:13px; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:.03em}
 .hx b:empty{display:none}
-.hex:hover .hx{background:rgba(255,255,255,.98); transform:scale(1.035)}
-.hex:hover .hx::before{background:#fff}
-.hex.primary .hx{background:rgba(255,255,255,.9)}
-.hex.primary .hx::before{background:rgba(255,255,255,.78)}
+.hex:hover .hx{transform:scale(1.035)}
+.hex:hover .hx::before{background:linear-gradient(140deg,rgba(255,255,255,.46) 0,rgba(255,255,255,.18) 42%,rgba(255,255,255,.12) 60%,rgba(255,255,255,.28) 100%)}
+.hex.primary .hx::before{background:linear-gradient(140deg,rgba(255,255,255,.40) 0,rgba(255,255,255,.14) 42%,rgba(255,255,255,.09) 60%,rgba(255,255,255,.22) 100%)}
 .hex:focus-visible{outline:0}
-.hex:focus-visible .hx::before{background:#fff}
+.hex:focus-visible .hx::after{filter:drop-shadow(0 0 5px #fff)}
 .sideline{max-width:170px; padding-left:16px; border-left:1px solid rgba(255,255,255,.45); color:rgba(255,255,255,.86); font-size:9px; font-weight:500; letter-spacing:.24em; text-transform:uppercase; line-height:2.1;
   text-shadow:0 1px 3px rgba(0,0,0,.5), 0 1px 18px rgba(0,0,0,.55)}
 body[data-view=resumen] .glass{border-radius:18px; -webkit-backdrop-filter:blur(30px) saturate(150%); backdrop-filter:blur(30px) saturate(150%)}
